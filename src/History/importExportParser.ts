@@ -1,7 +1,7 @@
 import { iHistoryImportExport } from '@/History/types';
 import { parseMemo } from '@/History/history_helpers';
 import { idToChainAlias } from '@/Network/helpers/aliasFromNetworkID';
-import { xChain } from '@/Network/network';
+import { avalanche } from '@/Network/network';
 import { bnToAvaxX } from '@/utils';
 import { getOutputsOfChain, getOutputTotals, getOwnedOutputs } from '@/Explorer/ortelius/utxoUtils';
 import { findDestinationChain, findSourceChain, OrteliusAvalancheTx } from '@/Explorer';
@@ -16,7 +16,7 @@ export function getImportSummary(tx: OrteliusAvalancheTx, addresses: string[]): 
     let amtOut = getOutputTotals(myOuts);
 
     let time = new Date(tx.timestamp);
-    let fee = xChain.getTxFee();
+    let fee = avalanche().XChain().getTxFee();
 
     let res: iHistoryImportExport = {
         id: tx.id,
@@ -46,7 +46,7 @@ export function getExportSummary(tx: OrteliusAvalancheTx, addresses: string[]): 
     let amtOut = getOutputTotals(chainOuts);
 
     let time = new Date(tx.timestamp);
-    let fee = xChain.getTxFee();
+    let fee = avalanche().XChain().getTxFee();
 
     let res: iHistoryImportExport = {
         id: tx.id,

@@ -1,4 +1,4 @@
-import { xChain } from '@/Network/network';
+import { avalanche } from '@/Network/network';
 
 import { iAssetCache, iAssetDescriptionClean } from '@/Asset/types';
 import xss from 'xss';
@@ -20,7 +20,7 @@ export async function getAssetDescription(assetId: string): Promise<iAssetDescri
     }
 
     try {
-        let res = await xChain.getAssetDescription(assetId);
+        let res = await avalanche().XChain().getAssetDescription(assetId);
         let clean: iAssetDescriptionClean = {
             ...res,
             assetID: assetId,

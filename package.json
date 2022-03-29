@@ -1,5 +1,5 @@
 {
-    "version": "0.15.0",
+    "version": "0.11.1-rc1",
     "license": "BSD-3",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
@@ -17,7 +17,6 @@
         "test": "jest",
         "test:watch": "jest --watch",
         "lint": "eslint .",
-        "prepare": "husky install && yarn build:prod",
         "docs": "typedoc",
         "docs:watch": "typedoc --watch"
     },
@@ -54,7 +53,6 @@
         "babel-plugin-module-resolver": "^4.1.0",
         "eslint": "^7.25.0",
         "eslint-config-prettier": "^8.3.0",
-        "husky": "^6.0.0",
         "jest": "^26.6.3",
         "lint-staged": "^10.5.4",
         "prettier": "2.2.1",
@@ -75,7 +73,7 @@
         "@metamask/eth-sig-util": "^4.0.0",
         "@obsidiansystems/hw-app-avalanche": "0.2.2",
         "@openzeppelin/contracts": "4.5.0",
-        "avalanche": "3.13.1",
+        "avalanche": "file:..\\avalanchejs\\package",
         "big.js": "^6.1.1",
         "bip32": "^2.0.6",
         "bip32-path": "^0.4.2",

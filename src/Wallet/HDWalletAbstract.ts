@@ -182,7 +182,7 @@ export abstract class HDWalletAbstract extends WalletProvider {
         // If the current internal or external X address is in the utxo set, increment hd index
         let utxoAddrs = utxosX.getAddresses();
         let utxoAddrsStr = utxoAddrs.map((addr) => {
-            return bintools.addressToString(avalanche.getHRP(), 'X', addr);
+            return bintools.addressToString(avalanche().getHRP(), 'X', addr);
         });
 
         let addrExternalX = this.getAddressX();
@@ -220,7 +220,7 @@ export abstract class HDWalletAbstract extends WalletProvider {
         // If the current P address is in the utxo set, increment hd index
         let utxoAddrs = utxosP.getAddresses();
         let utxoAddrsStr = utxoAddrs.map((addr) => {
-            return bintools.addressToString(avalanche.getHRP(), 'P', addr);
+            return bintools.addressToString(avalanche().getHRP(), 'P', addr);
         });
 
         let addrExternalP = this.getAddressP();

@@ -42,13 +42,13 @@ export class EvmWallet extends EvmWalletReadonly {
     }
 
     getKeyChain(): EVMKeyChain {
-        let keychain = new EVMKeyChain(avalanche.getHRP(), 'C');
+        let keychain = new EVMKeyChain(avalanche().getHRP(), 'C');
         keychain.importKey(this.getPrivateKeyBech());
         return keychain;
     }
 
     getKeyPair(): EVMKeyPair {
-        let keychain = new EVMKeyChain(avalanche.getHRP(), 'C');
+        let keychain = new EVMKeyChain(avalanche().getHRP(), 'C');
         return keychain.importKey(this.getPrivateKeyBech());
     }
 

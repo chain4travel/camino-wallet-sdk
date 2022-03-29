@@ -29,7 +29,7 @@ import {
 } from '@/helpers/tx_helper';
 import { BN, Buffer } from 'avalanche';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
-import { activeNetwork, avalanche, cChain, pChain, web3, xChain } from '@/Network/network';
+import { activeNetwork, avalanche, web3 } from '@/Network/network';
 import { EvmWallet } from '@/Wallet/EVM/EvmWallet';
 
 import {
@@ -237,17 +237,11 @@ export abstract class WalletProvider {
         let changeAddress = this.getChangeAddressX();
         let utxoSet = this.utxosX;
 
-        let tx = await xChain.buildBaseTx(
-            utxoSet,
-            amount,
-            activeNetwork.avaxID,
-            [to],
-            froms,
-            [changeAddress],
-            memoBuff
-        );
+        let tx = await avalanche()
+            .XChain()
+            .buildBaseTx(utxoSet, amount, activeNetwork.avaxID, [to], froms, [changeAddress], memoBuff);
         let signedTx = await this.signX(tx);
-        let txId = await xChain.issueTx(signedTx);
+        let txId = await avalanche().XChain().issueTx(signedTx);
         await waitTxX(txId);
 
         // Update UTXOs
@@ -284,9 +278,9 @@ export abstract class WalletProvider {
         let fromAddrs = await this.getAllAddressesX();
         let changeAddr = this.getChangeAddressX();
 
-        let tx = await xChain.buildBaseTx(utxoSet, amount, assetID, [to], fromAddrs, [changeAddr]);
+        let tx = await avalanche().XChain().buildBaseTx(utxoSet, amount, assetID, [to], fromAddrs, [changeAddr]);
         let signed = await this.signX(tx);
-        let txId = await xChain.issueTx(signed);
+        let txId = await avalanche().XChain().issueTx(signed);
         await waitTxX(txId);
 
         this.updateUtxosX();
@@ -751,7 +745,7 @@ export abstract class WalletProvider {
         );
 
         let tx = await this.signP(exportTx);
-        let txId = await pChain.issueTx(tx);
+        let txId = await avalanche().PChain().issueTx(tx);
         await waitTxP(txId);
 
         await this.updateUtxosP();
@@ -809,7 +803,7 @@ export abstract class WalletProvider {
 
         let tx = await this.signC(exportTx);
 
-        let txId = await cChain.issueTx(tx);
+        let txId = await avalanche().CChain().issueTx(tx);
 
         await waitTxC(txId);
 
@@ -843,7 +837,7 @@ export abstract class WalletProvider {
 
         let tx = await this.signX(exportTx);
 
-        let txId = await xChain.issueTx(tx);
+        let txId = await avalanche().XChain().issueTx(tx);
         await waitTxX(txId);
 
         // Update UTXOs
@@ -881,7 +875,7 @@ export abstract class WalletProvider {
 
         let xToAddr = this.getAddressX();
 
-        let hrp = avalanche.getHRP();
+        let hrp = avalanche().getHRP();
         let utxoAddrs = utxoSet.getAddresses().map((addr) => bintools.addressToString(hrp, 'X', addr));
 
         let fromAddrs = utxoAddrs;
@@ -890,12 +884,12 @@ export abstract class WalletProvider {
         const sourceChainId = chainIdFromAlias(sourceChain);
 
         // Owner addresses, the addresses we exported to
-        const unsignedTx = await xChain.buildImportTx(utxoSet, ownerAddrs, sourceChainId, [xToAddr], fromAddrs, [
-            xToAddr,
-        ]);
+        const unsignedTx = await avalanche()
+            .XChain()
+            .buildImportTx(utxoSet, ownerAddrs, sourceChainId, [xToAddr], fromAddrs, [xToAddr]);
 
         const tx = await this.signX(unsignedTx);
-        const txId = await xChain.issueTx(tx);
+        const txId = await avalanche().XChain().issueTx(tx);
 
         await waitTxX(txId);
 
@@ -920,7 +914,7 @@ export abstract class WalletProvider {
         // Owner addresses, the addresses we exported to
         let walletAddrP = this.getAddressP();
 
-        let hrp = avalanche.getHRP();
+        let hrp = avalanche().getHRP();
         let utxoAddrs = utxoSet.getAddresses().map((addr) => bintools.addressToString(hrp, 'P', addr));
 
         let ownerAddrs = utxoAddrs;
@@ -931,18 +925,20 @@ export abstract class WalletProvider {
 
         const sourceChainId = chainIdFromAlias(sourceChain);
 
-        const unsignedTx = await pChain.buildImportTx(
-            utxoSet,
-            ownerAddrs,
-            sourceChainId,
-            [toAddress],
-            ownerAddrs,
-            [walletAddrP],
-            undefined,
-            undefined
-        );
+        const unsignedTx = await avalanche()
+            .PChain()
+            .buildImportTx(
+                utxoSet,
+                ownerAddrs,
+                sourceChainId,
+                [toAddress],
+                ownerAddrs,
+                [walletAddrP],
+                undefined,
+                undefined
+            );
         const tx = await this.signP(unsignedTx);
-        const txId = await pChain.issueTx(tx);
+        const txId = await avalanche().PChain().issueTx(tx);
 
         await waitTxP(txId);
 
@@ -987,16 +983,11 @@ export abstract class WalletProvider {
             fee = avaxCtoX(baseFee.mul(new BN(importGas)));
         }
 
-        const unsignedTx = await cChain.buildImportTx(
-            utxoSet,
-            toAddress,
-            ownerAddresses,
-            sourceChainId,
-            fromAddresses,
-            fee
-        );
+        const unsignedTx = await avalanche()
+            .CChain()
+            .buildImportTx(utxoSet, toAddress, ownerAddresses, sourceChainId, fromAddresses, fee);
         let tx = await this.signC(unsignedTx);
-        let id = await cChain.issueTx(tx);
+        let id = await avalanche().CChain().issueTx(tx);
 
         await waitTxC(id);
 
@@ -1024,7 +1015,7 @@ export abstract class WalletProvider {
         );
 
         let signed = await this.signX(unsignedTx);
-        const txId = await xChain.issueTx(signed);
+        const txId = await avalanche().XChain().issueTx(signed);
         return await waitTxX(txId);
     }
 
@@ -1045,7 +1036,7 @@ export abstract class WalletProvider {
             utxoSet
         );
         let signed = await this.signX(tx);
-        const txId = await xChain.issueTx(signed);
+        const txId = await avalanche().XChain().issueTx(signed);
         return await waitTxX(txId);
     }
 
@@ -1097,7 +1088,7 @@ export abstract class WalletProvider {
         let startTime = new BN(Math.round(start.getTime() / 1000));
         let endTime = new BN(Math.round(end.getTime() / 1000));
 
-        const unsignedTx = await pChain.buildAddValidatorTx(
+        const unsignedTx = await avalanche().PChain().buildAddValidatorTx(
             utxoSet,
             [stakeReturnAddr],
             pAddressStrings, // from
@@ -1111,7 +1102,7 @@ export abstract class WalletProvider {
         );
 
         let tx = await this.signP(unsignedTx);
-        const txId = await pChain.issueTx(tx);
+        const txId = await avalanche().PChain().issueTx(tx);
         await waitTxP(txId);
 
         this.updateUtxosP();
@@ -1152,7 +1143,7 @@ export abstract class WalletProvider {
         let startTime = new BN(Math.round(start.getTime() / 1000));
         let endTime = new BN(Math.round(end.getTime() / 1000));
 
-        const unsignedTx = await pChain.buildAddDelegatorTx(
+        const unsignedTx = await avalanche().PChain().buildAddDelegatorTx(
             utxoSet,
             [stakeReturnAddr],
             pAddressStrings,
@@ -1165,7 +1156,7 @@ export abstract class WalletProvider {
         );
 
         const tx = await this.signP(unsignedTx);
-        const txId = await pChain.issueTx(tx);
+        const txId = await avalanche().PChain().issueTx(tx);
         await waitTxP(txId);
 
         this.updateUtxosP();
@@ -1209,12 +1200,12 @@ export abstract class WalletProvider {
 
     async getHistoryX(limit = 0): Promise<OrteliusAvalancheTx[]> {
         let addrs = await this.getAllAddressesX();
-        return await getAddressHistory(addrs, limit, xChain.getBlockchainID());
+        return await getAddressHistory(addrs, limit, avalanche().XChain().getBlockchainID());
     }
 
     async getHistoryP(limit = 0): Promise<OrteliusAvalancheTx[]> {
         let addrs = await this.getAllAddressesP();
-        return await getAddressHistory(addrs, limit, pChain.getBlockchainID());
+        return await getAddressHistory(addrs, limit, avalanche().PChain().getBlockchainID());
     }
 
     /**
@@ -1224,7 +1215,7 @@ export abstract class WalletProvider {
      */
     async getHistoryC(limit = 0): Promise<OrteliusAvalancheTx[]> {
         let addrs = [this.getEvmAddressBech(), ...(await this.getAllAddressesX())];
-        return await getAddressHistory(addrs, limit, cChain.getBlockchainID());
+        return await getAddressHistory(addrs, limit, avalanche().CChain().getBlockchainID());
     }
 
     /**

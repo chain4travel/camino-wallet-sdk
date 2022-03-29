@@ -1,5 +1,5 @@
 import { ChainIdType } from '@/common';
-import { cChain, pChain, xChain } from '@/Network/network';
+import { avalanche } from '@/Network/network';
 
 /**
  * Given a chain alias, returns the chain id.
@@ -7,11 +7,11 @@ import { cChain, pChain, xChain } from '@/Network/network';
  */
 export function chainIdFromAlias(alias: ChainIdType) {
     if (alias === 'X') {
-        return xChain.getBlockchainID();
+        return avalanche().XChain().getBlockchainID();
     } else if (alias === 'P') {
-        return pChain.getBlockchainID();
+        return avalanche().PChain().getBlockchainID();
     } else if (alias === 'C') {
-        return cChain.getBlockchainID();
+        return avalanche().CChain().getBlockchainID();
     }
     throw new Error('Unknown chain alias.');
 }

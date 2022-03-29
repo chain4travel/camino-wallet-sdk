@@ -1,4 +1,4 @@
-import { activeNetwork, cChain, web3 } from '@/Network/network';
+import { activeNetwork, avalanche, web3 } from '@/Network/network';
 import { BN } from 'avalanche';
 import { EVMInput, ExportTx, SECPTransferOutput, TransferableOutput, UnsignedTx } from 'avalanche/dist/apis/evm';
 import { ExportChainsC } from '@/Wallet/types';
@@ -39,7 +39,7 @@ export function adjustValue(val: BN, perc: number) {
  * Returns the base fee from the network.
  */
 export async function getBaseFee(): Promise<BN> {
-    const rawHex = (await cChain.getBaseFee()).substring(2);
+    const rawHex = (await avalanche().CChain().getBaseFee()).substring(2);
     return new BN(rawHex, 'hex');
 }
 
@@ -55,7 +55,7 @@ export async function getBaseFeeRecommended() {
  * Returns the base max priority fee from the network.
  */
 export async function getMaxPriorityFee(): Promise<BN> {
-    const rawHex = (await cChain.getMaxPriorityFeePerGas()).substring(2);
+    const rawHex = (await avalanche().CChain().getMaxPriorityFeePerGas()).substring(2);
     return new BN(rawHex, 'hex');
 }
 
@@ -124,7 +124,7 @@ export function estimateExportGasFeeFromMockTx(
 
     const unisgnedTx = new UnsignedTx(exportTx);
 
-    return costExportTx(unisgnedTx);
+    return costExportTx(avalanche().getNetwork().C, unisgnedTx);
 }
 
 /**
@@ -144,5 +144,5 @@ export async function estimateExportGasFee(
 ): Promise<number> {
     let exportTx = await buildEvmExportTransaction([from], to, amount, fromBech, destinationChain, new BN(0));
 
-    return costExportTx(exportTx);
+    return costExportTx(avalanche().getNetwork().C, exportTx);
 }

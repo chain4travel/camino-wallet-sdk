@@ -38,8 +38,8 @@ export class EvmWalletReadonly {
 
     getAddressBech32(): string {
         const compressedKey = this.getCompressedPublicKey();
-        let addr = EVMKeyPair.addressFromPublicKey(BufferAvalanche.from(compressedKey.substring(2), 'hex'));
-        return bintools.addressToString(avalanche.getHRP(), 'C', addr);
+        let addr = EVMKeyPair.prototype.addressFromPublicKey(BufferAvalanche.from(compressedKey.substring(2), 'hex'));
+        return bintools.addressToString(avalanche().getHRP(), 'C', addr);
     }
 
     /**

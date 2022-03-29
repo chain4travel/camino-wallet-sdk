@@ -7,7 +7,7 @@ import {
     UnsignedTx as PlatformUnsignedTx,
     Tx as PlatformTx,
 } from 'avalanche/dist/apis/platformvm';
-import { avalanche, pChain, xChain } from '@/Network/network';
+import { avalanche } from '@/Network/network';
 import { Buffer as BufferAvalanche } from 'avalanche';
 import { EvmWallet } from '@/Wallet/EVM/EvmWallet';
 import { UnsignedTx, Tx, KeyPair as EVMKeyPair } from 'avalanche/dist/apis/evm';
@@ -51,13 +51,13 @@ export class SingletonWallet extends WalletProvider implements UnsafeWallet {
     }
 
     private getKeyChainX(): AVMKeyChain {
-        let keyChain = xChain.newKeyChain();
+        let keyChain = avalanche().XChain().newKeyChain();
         keyChain.importKey(this.key);
         return keyChain;
     }
 
     private getKeyChainP(): PlatformKeyChain {
-        let keyChain = pChain.newKeyChain();
+        let keyChain = avalanche().PChain().newKeyChain();
         keyChain.importKey(this.key);
         return keyChain;
     }

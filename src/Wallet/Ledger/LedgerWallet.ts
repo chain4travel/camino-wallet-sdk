@@ -248,7 +248,7 @@ export class LedgerWallet extends PublicMnemonicWallet {
             items = ((tx as AVMImportTx) || PlatformImportTx).getImportInputs();
         }
 
-        let hrp = avalanche.getHRP();
+        let hrp = avalanche().getHRP();
         let paths: string[] = [];
 
         let isAvaxOnly = true;

@@ -1,13 +1,13 @@
 import { NetworkConfig } from '@/Network/types';
-import { LocalnetConfig, MainnetConfig, TestnetConfig } from '@/Network/constants';
+import { LocalnetConfig } from '@/Network/constants';
 import { activeNetwork } from '@/Network/network';
 
-export function isFujiNetwork(activeNetwork: NetworkConfig) {
-    return activeNetwork.networkID === TestnetConfig.networkID;
+export function isFujiNetwork(_: NetworkConfig) {
+    return false;
 }
 
-export function isMainnetNetwork(activeNetwork: NetworkConfig) {
-    return activeNetwork.networkID === MainnetConfig.networkID;
+export function isMainnetNetwork(_: NetworkConfig) {
+    return false;
 }
 
 export function isLocalNetwork(activeNetwork: NetworkConfig) {

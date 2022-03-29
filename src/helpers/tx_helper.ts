@@ -1,4 +1,4 @@
-import { cChain, ethersProvider, pChain, web3, xChain } from '@/Network/network';
+import { avalanche, ethersProvider, web3 } from '@/Network/network';
 
 import { BN, Buffer } from 'avalanche';
 import {
@@ -49,14 +49,9 @@ export async function buildCreateNftFamilyTx(
         minterSets.push(minterSet);
     }
 
-    let unsignedTx: AVMUnsignedTx = await xChain.buildCreateNFTAssetTx(
-        utxoSet,
-        fromAddresses,
-        [changeAddress],
-        minterSets,
-        name,
-        symbol
-    );
+    let unsignedTx: AVMUnsignedTx = await avalanche()
+        .XChain()
+        .buildCreateNFTAssetTx(utxoSet, fromAddresses, [changeAddress], minterSets, name, symbol);
     return unsignedTx;
 }
 
@@ -81,15 +76,17 @@ export async function buildMintNftTx(
 
     let groupID = (mintUtxo.getOutput() as NFTMintOutput).getGroupID();
 
-    let mintTx = await xChain.buildCreateNFTMintTx(
-        utxoSet,
-        owners,
-        sourceAddresses,
-        [changeAddress],
-        mintUtxo.getUTXOID(),
-        groupID,
-        payload
-    );
+    let mintTx = await avalanche()
+        .XChain()
+        .buildCreateNFTMintTx(
+            utxoSet,
+            owners,
+            sourceAddresses,
+            [changeAddress],
+            mintUtxo.getUTXOID(),
+            groupID,
+            payload
+        );
     return mintTx;
 }
 
@@ -103,9 +100,11 @@ export async function buildAvmExportTransaction(
 ) {
     let destinationChainId = chainIdFromAlias(destinationChain);
 
-    return await xChain.buildExportTx(utxoSet as AVMUTXOSet, amount, destinationChainId, [toAddress], fromAddresses, [
-        sourceChangeAddress,
-    ]);
+    return await avalanche()
+        .XChain()
+        .buildExportTx(utxoSet as AVMUTXOSet, amount, destinationChainId, [toAddress], fromAddresses, [
+            sourceChangeAddress,
+        ]);
 }
 
 export async function buildPlatformExportTransaction(
@@ -118,9 +117,9 @@ export async function buildPlatformExportTransaction(
 ) {
     let destinationChainId = chainIdFromAlias(destinationChain);
 
-    return await pChain.buildExportTx(utxoSet, amount, destinationChainId, [toAddress], fromAddresses, [
-        sourceChangeAddress,
-    ]);
+    return await avalanche()
+        .PChain()
+        .buildExportTx(utxoSet, amount, destinationChainId, [toAddress], fromAddresses, [sourceChangeAddress]);
 }
 
 /**
@@ -143,23 +142,25 @@ export async function buildEvmExportTransaction(
     let destinationChainId = chainIdFromAlias(destinationChain);
 
     const nonce = await web3.eth.getTransactionCount(fromAddresses[0]);
-    const avaxAssetIDBuf: Buffer = await xChain.getAVAXAssetID();
+    const avaxAssetIDBuf: Buffer = await avalanche().XChain().getAVAXAssetID();
     const avaxAssetIDStr: string = bintools.cb58Encode(avaxAssetIDBuf);
 
     let fromAddressHex = fromAddresses[0];
 
-    return await cChain.buildExportTx(
-        amount,
-        avaxAssetIDStr,
-        destinationChainId,
-        fromAddressHex,
-        fromAddressBech,
-        [toAddress],
-        nonce,
-        undefined,
-        undefined,
-        fee
-    );
+    return await avalanche()
+        .CChain()
+        .buildExportTx(
+            amount,
+            avaxAssetIDStr,
+            destinationChainId,
+            fromAddressHex,
+            fromAddressBech,
+            [toAddress],
+            nonce,
+            undefined,
+            undefined,
+            fee
+        );
 }
 
 export async function buildEvmTransferEIP1559Tx(

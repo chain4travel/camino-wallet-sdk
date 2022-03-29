@@ -1,6 +1,5 @@
 import * as bip32 from 'bip32';
-import { getPreferredHRP } from 'avalanche/dist/utils';
-import { activeNetwork, avalanche, pChain, xChain } from '@/Network/network';
+import { activeNetwork, avalanche } from '@/Network/network';
 import { KeyPair as AVMKeyPair, KeyChain as AVMKeyChain } from 'avalanche/dist/apis/avm/keychain';
 import { KeyChain as PlatformKeyChain, KeyPair as PlatformKeyPair } from 'avalanche/dist/apis/platformvm';
 import { HdChainType } from './types';
@@ -43,7 +42,7 @@ export class HdScanner {
         this.changePath = isInternal ? '1' : '0';
         this.accountKey = accountKey;
         // We need an instance of an AVM key to generate adddresses from public keys
-        let hrp = getPreferredHRP(avalanche.getNetworkID());
+        let hrp = avalanche().getHRP();
         this.avmAddrFactory = new AVMKeyPair(hrp, 'X');
     }
 
@@ -121,7 +120,7 @@ export class HdScanner {
     }
 
     getKeyChainX(): AVMKeyChain {
-        let keychain = xChain.newKeyChain();
+        let keychain = avalanche().XChain().newKeyChain();
         for (let i = 0; i <= this.index; i++) {
             let key = this.getKeyForIndexX(i);
             keychain.addKey(key);
@@ -130,7 +129,7 @@ export class HdScanner {
     }
 
     getKeyChainP(): PlatformKeyChain {
-        let keychain = pChain.newKeyChain();
+        let keychain = avalanche().PChain().newKeyChain();
         for (let i = 0; i <= this.index; i++) {
             let key = this.getKeyForIndexP(i);
             keychain.addKey(key);
@@ -147,7 +146,7 @@ export class HdScanner {
 
         let pkBuf: Buffer = new Buffer(pkHex, 'hex');
 
-        let keychain = xChain.newKeyChain();
+        let keychain = avalanche().XChain().newKeyChain();
         let keypair = keychain.importKey(pkBuf);
 
         this.keyCacheX[index] = keypair;
@@ -163,7 +162,7 @@ export class HdScanner {
 
         let pkBuf: Buffer = new Buffer(pkHex, 'hex');
 
-        let keychain = pChain.newKeyChain();
+        let keychain = avalanche().PChain().newKeyChain();
         let keypair = keychain.importKey(pkBuf);
 
         this.keyCacheP[index] = keypair;
@@ -188,9 +187,9 @@ export class HdScanner {
         let publicKey = key.publicKey.toString('hex');
         let publicKeyBuff = Buffer.from(publicKey, 'hex');
 
-        let hrp = getPreferredHRP(avalanche.getNetworkID());
+        let hrp = avalanche().getHRP();
 
-        let addrBuf = AVMKeyPair.addressFromPublicKey(publicKeyBuff);
+        let addrBuf = AVMKeyPair.prototype.addressFromPublicKey(publicKeyBuff);
         let addr = bintools.addressToString(hrp, chainId, addrBuf);
 
         return addr;
@@ -258,8 +257,8 @@ export class HdScanner {
             addrsP.push(addressP);
         }
 
-        let utxoSetX = (await xChain.getUTXOs(addrsX)).utxos;
-        let utxoSetP = (await pChain.getUTXOs(addrsP)).utxos;
+        let utxoSetX = (await avalanche().XChain().getUTXOs(addrsX)).utxos;
+        let utxoSetP = (await avalanche().PChain().getUTXOs(addrsP)).utxos;
 
         // Scan UTXOs of these indexes and try to find a gap of HD_SCAN_GAP_SIZE
         for (let i: number = 0; i < addrsX.length - HD_SCAN_GAP_SIZE; i++) {
