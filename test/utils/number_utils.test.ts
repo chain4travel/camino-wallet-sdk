@@ -1,5 +1,5 @@
 import * as Utils from '@/utils';
-import { BN } from 'avalanche';
+import { BN } from '@c4tplatform/avalanche';
 
 describe('stringToBN', () => {
     it('no decimals', () => {

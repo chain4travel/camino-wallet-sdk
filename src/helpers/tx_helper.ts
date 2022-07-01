@@ -1,6 +1,6 @@
 import { avalanche, ethersProvider, web3 } from '@/Network/network';
 
-import { BN, Buffer } from 'avalanche';
+import { BN, Buffer } from '@c4tplatform/avalanche';
 import {
     AVMConstants,
     MinterSet,
@@ -9,13 +9,13 @@ import {
     UTXO as AVMUTXO,
     UTXOSet as AVMUTXOSet,
     UTXOSet,
-} from 'avalanche/dist/apis/avm';
+} from '@c4tplatform/avalanche/dist/apis/avm';
 
-import { PayloadBase } from 'avalanche/dist/utils';
-import { OutputOwners } from 'avalanche/dist/common';
-import { PlatformVMConstants, UTXOSet as PlatformUTXOSet } from 'avalanche/dist/apis/platformvm';
+import { PayloadBase } from '@c4tplatform/avalanche/dist/utils';
+import { OutputOwners } from '@c4tplatform/avalanche/dist/common';
+import { PlatformVMConstants, UTXOSet as PlatformUTXOSet } from '@c4tplatform/avalanche/dist/apis/platformvm';
 
-import { EVMConstants } from 'avalanche/dist/apis/evm';
+import { EVMConstants } from '@c4tplatform/avalanche/dist/apis/evm';
 
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
 import EthereumjsCommon from '@ethereumjs/common';

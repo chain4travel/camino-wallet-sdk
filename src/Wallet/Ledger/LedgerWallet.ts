@@ -22,8 +22,8 @@ import {
     AVMConstants,
     ImportTx as AVMImportTx,
     SelectCredentialClass as AVMSelectCredentialClass,
-} from 'avalanche/dist/apis/avm';
-import { Credential, SigIdx, Signature } from 'avalanche/dist/common';
+} from '@c4tplatform/avalanche/dist/apis/avm';
+import { Credential, SigIdx, Signature } from '@c4tplatform/avalanche/dist/common';
 import {
     UnsignedTx as EVMUnsignedTx,
     Tx as EVMTx,
@@ -32,7 +32,7 @@ import {
     EVMInput,
     SelectCredentialClass as EVMSelectCredentialClass,
     EVMConstants,
-} from 'avalanche/dist/apis/evm';
+} from '@c4tplatform/avalanche/dist/apis/evm';
 import {
     UnsignedTx as PlatformUnsignedTx,
     Tx as PlatformTx,
@@ -40,9 +40,9 @@ import {
     ExportTx as PlatformExportTx,
     ImportTx as PlatformImportTx,
     SelectCredentialClass as PlatformSelectCredentialClass,
-} from 'avalanche/dist/apis/platformvm';
+} from '@c4tplatform/avalanche/dist/apis/platformvm';
 import { activeNetwork, avalanche, web3 } from '@/Network/network';
-import { Buffer } from 'avalanche';
+import { Buffer } from '@c4tplatform/avalanche';
 import { ChainIdType } from '@/common';
 import { Buffer as BufferNative } from 'buffer';
 import { ParseableAvmTxEnum, ParseablePlatformEnum, ParseableEvmTxEnum } from '@/helpers/tx_helper';

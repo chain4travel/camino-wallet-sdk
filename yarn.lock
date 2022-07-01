@@ -919,6 +919,28 @@
   resolved "https://registry.npmjs.org/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@c4tplatform/avalanche@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@c4tplatform/avalanche/-/avalanche-0.0.1.tgz#86af328a35c314e8bfcea1ee22f4168f472351ef"
+  integrity sha512-sQKQ6jME4ps38CvLN5eXs52+hgR9hq1dQORvfwKp9fTt9YC+bGhWh1P7Ohu1uUHYcxXKqw7fOO7a4+19G9QJMQ==
+  dependencies:
+    assert "2.0.0"
+    axios "0.24.0"
+    bech32 "2.0.0"
+    bip39 "3.0.4"
+    bn.js "5.2.0"
+    buffer "^6.0.3"
+    create-hash "1.2.0"
+    crypto-browserify "3.12.0"
+    elliptic "6.5.4"
+    ethers "5.5.1"
+    hdkey "2.0.1"
+    isomorphic-dompurify "^0.16.0"
+    isomorphic-ws "4.0.1"
+    store2 "2.12.0"
+    stream-browserify "3.0.0"
+    ws "8.2.3"
+
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
   resolved "https://registry.npmjs.org/@cnakazawa/watch/-/watch-1.0.4.tgz"
@@ -2242,26 +2264,6 @@ available-typed-arrays@^1.0.2:
   resolved "https://registry.npmjs.org/available-typed-arrays/-/available-typed-arrays-1.0.4.tgz"
   integrity sha512-SA5mXJWrId1TaQjfxUYghbqQ/hYioKmLJvPJyDuYRtXXenFNMjj4hSSt1Cf1xsuXSXrtxrVC5Ot4eU6cOtBDdA==
 
-"avalanche@file:..\\avalanchejs\\package":
-  version "3.10.1"
-  dependencies:
-    assert "2.0.0"
-    axios "0.24.0"
-    bech32 "2.0.0"
-    bip39 "3.0.4"
-    bn.js "5.2.0"
-    buffer "6.0.3"
-    create-hash "1.2.0"
-    crypto-browserify "3.12.0"
-    elliptic "6.5.4"
-    ethers "5.5.1"
-    hdkey "2.0.1"
-    isomorphic-dompurify "^0.16.0"
-    isomorphic-ws "4.0.1"
-    store2 "2.12.0"
-    stream-browserify "3.0.0"
-    ws "8.2.3"
-
 aws-sign2@~0.7.0:
   version "0.7.0"
   resolved "https://registry.npmjs.org/aws-sign2/-/aws-sign2-0.7.0.tgz"
@@ -2709,14 +2711,6 @@ buffer-xor@^1.0.3:
   resolved "https://registry.npmjs.org/buffer-xor/-/buffer-xor-1.0.3.tgz"
   integrity sha1-JuYe0UIvtw3ULm42cp7VHYVf6Nk=
 
-buffer@6.0.3:
-  version "6.0.3"
-  resolved "https://registry.yarnpkg.com/buffer/-/buffer-6.0.3.tgz#2ace578459cc8fbe2a70aaa8f52ee63b6a74c6c6"
-  integrity sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==
-  dependencies:
-    base64-js "^1.3.1"
-    ieee754 "^1.2.1"
-
 buffer@^5.0.5, buffer@^5.5.0, buffer@^5.6.0:
   version "5.7.1"
   resolved "https://registry.npmjs.org/buffer/-/buffer-5.7.1.tgz"
@@ -2724,6 +2718,14 @@ buffer@^5.0.5, buffer@^5.5.0, buffer@^5.6.0:
   dependencies:
     base64-js "^1.3.1"
     ieee754 "^1.1.13"
+
+buffer@^6.0.3:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/buffer/-/buffer-6.0.3.tgz#2ace578459cc8fbe2a70aaa8f52ee63b6a74c6c6"
+  integrity sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==
+  dependencies:
+    base64-js "^1.3.1"
+    ieee754 "^1.2.1"
 
 bufferutil@^4.0.1:
   version "4.0.3"

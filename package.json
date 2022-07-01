@@ -1,6 +1,6 @@
 {
-    "version": "0.11.1-rc1",
-    "license": "BSD-3",
+    "version": "0.0.2",
+    "license": "BSD-3-Clause",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "files": [
@@ -23,11 +23,11 @@
     "lint-staged": {
         "**/*": "prettier --write --ignore-unknown"
     },
-    "name": "@avalabs/avalanche-wallet-sdk",
+    "name": "@c4tplatform/avalanche-wallet-sdk",
     "author": "AVA Labs",
     "repository": {
         "type": "git",
-        "url": "https://github.com/ava-labs/avalanche-wallet-sdk"
+        "url": "git+https://github.com/ava-labs/avalanche-wallet-sdk.git"
     },
     "publishConfig": {
         "access": "public"
@@ -73,7 +73,7 @@
         "@metamask/eth-sig-util": "^4.0.0",
         "@obsidiansystems/hw-app-avalanche": "0.2.2",
         "@openzeppelin/contracts": "4.5.0",
-        "avalanche": "file:..\\avalanchejs\\package",
+        "@c4tplatform/avalanche": "0.0.1",
         "big.js": "^6.1.1",
         "bip32": "^2.0.6",
         "bip32-path": "^0.4.2",
@@ -92,5 +92,13 @@
         "web3": "1.6.0",
         "web3-eth-contract": "1.6.0",
         "xss": "^1.0.10"
+    },
+    "description": "-   This library is under development and there might be frequent breaking changes.\r -   Audit pending.",
+    "bugs": {
+        "url": "https://github.com/ava-labs/avalanche-wallet-sdk/issues"
+    },
+    "homepage": "https://github.com/ava-labs/avalanche-wallet-sdk#readme",
+    "directories": {
+        "test": "test"
     }
 }

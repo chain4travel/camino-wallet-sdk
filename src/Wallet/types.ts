@@ -1,6 +1,6 @@
-import { KeyPair as AVMKeyPair } from 'avalanche/dist/apis/avm';
+import { KeyPair as AVMKeyPair } from '@c4tplatform/avalanche/dist/apis/avm';
 
-import { BN } from 'avalanche';
+import { BN } from '@c4tplatform/avalanche';
 
 import { MnemonicWallet } from '@/Wallet/MnemonicWallet';
 import { SingletonWallet } from '@/Wallet/SingletonWallet';
