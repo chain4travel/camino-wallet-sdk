@@ -1,4 +1,4 @@
-import { BinTools } from '@c4tplatform/avalanche';
+import { BinTools } from '@c4tplatform/camino';
 
 export const bintools = BinTools.getInstance();
 

@@ -1,4 +1,4 @@
-import { Avalanche } from '@c4tplatform/avalanche/dist';
+import { Avalanche } from '@c4tplatform/camino/dist';
 import Web3 from 'web3';
 import { DefaultConfig } from './constants';
 import { NetworkConfig, NetworkConfigRpc, NetworkProtocolType } from './types';

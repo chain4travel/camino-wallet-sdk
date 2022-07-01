@@ -1,4 +1,4 @@
-import { BN } from '@c4tplatform/avalanche';
+import { BN } from '@c4tplatform/camino';
 import Big from 'big.js';
 
 declare module 'big.js' {

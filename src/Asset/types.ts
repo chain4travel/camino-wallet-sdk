@@ -1,4 +1,4 @@
-import { Buffer } from '@c4tplatform/avalanche';
+import { Buffer } from '@c4tplatform/camino';
 import { Erc20Token } from '@/Asset/Erc20Token';
 
 export interface iAssetCache {

@@ -1,7 +1,7 @@
-import { Buffer as BufferAvalanche } from '@c4tplatform/avalanche';
+import { Buffer as BufferAvalanche } from '@c4tplatform/camino';
 import { validateAddress } from '@/helpers/address_helper';
 import createHash from 'create-hash';
-import { PayloadBase, PayloadTypes } from '@c4tplatform/avalanche/dist/utils';
+import { PayloadBase, PayloadTypes } from '@c4tplatform/camino/dist/utils';
 
 /**
  * Checks if address is valid.

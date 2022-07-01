@@ -1,7 +1,7 @@
-import { BN, Buffer as BufferAvalanche } from '@c4tplatform/avalanche';
+import { BN, Buffer as BufferAvalanche } from '@c4tplatform/camino';
 import { avalanche, web3 } from '@/Network/network';
 import { ethers } from 'ethers';
-import { KeyPair as EVMKeyPair } from '@c4tplatform/avalanche/dist/apis/evm/keychain';
+import { KeyPair as EVMKeyPair } from '@c4tplatform/camino/dist/apis/evm/keychain';
 import { bintools } from '@/common';
 import { computePublicKey, computeAddress } from 'ethers/lib/utils';
 import { payments, ECPair, networks } from 'bitcoinjs-lib';

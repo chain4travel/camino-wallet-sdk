@@ -1,5 +1,5 @@
 import { OrteliusAvalancheTx } from '@/Explorer';
-import { BN } from '@c4tplatform/avalanche';
+import { BN } from '@c4tplatform/camino';
 import { getOutputTotals } from '@/Explorer/ortelius/utxoUtils';
 
 /**

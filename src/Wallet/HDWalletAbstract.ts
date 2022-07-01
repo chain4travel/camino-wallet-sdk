@@ -1,8 +1,8 @@
 import { WalletProvider } from '@/Wallet/Wallet';
 import { HdScanner } from '@/Wallet/HdScanner';
-import { UTXOSet as AVMUTXOSet } from '@c4tplatform/avalanche/dist/apis/avm/utxos';
+import { UTXOSet as AVMUTXOSet } from '@c4tplatform/camino/dist/apis/avm/utxos';
 import { avalanche } from '@/Network/network';
-import { UTXOSet as PlatformUTXOSet } from '@c4tplatform/avalanche/dist/apis/platformvm';
+import { UTXOSet as PlatformUTXOSet } from '@c4tplatform/camino/dist/apis/platformvm';
 import { iHDWalletIndex } from '@/Wallet/types';
 import { bintools } from '@/common';
 import * as bip32 from 'bip32';

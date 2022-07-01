@@ -4,7 +4,7 @@ import {
     TestAvaxAssetID,
     TestCBlockchainID,
     TestXBlockchainID,
-} from '@c4tplatform/avalanche/dist/utils/constants';
+} from '@c4tplatform/camino/dist/utils/constants';
 import { getRpcC, getRpcP, getRpcX } from './helpers/rpcFromConfig';
 
 export const LocalnetConfig: NetworkConfig = {

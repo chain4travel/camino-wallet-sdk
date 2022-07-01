@@ -1,16 +1,16 @@
 import { activeNetwork, avalanche, web3 } from '@/Network/network';
-import { BN } from '@c4tplatform/avalanche';
+import { BN } from '@c4tplatform/camino';
 import {
     EVMInput,
     ExportTx,
     SECPTransferOutput,
     TransferableOutput,
     UnsignedTx,
-} from '@c4tplatform/avalanche/dist/apis/evm';
+} from '@c4tplatform/camino/dist/apis/evm';
 import { ExportChainsC } from '@/Wallet/types';
 import { bintools } from '@/common';
 import { chainIdFromAlias } from '@/Network';
-import { costExportTx, costImportTx } from '@c4tplatform/avalanche/dist/utils';
+import { costExportTx, costImportTx } from '@c4tplatform/camino/dist/utils';
 import { buildEvmExportTransaction } from '@/helpers/tx_helper';
 
 const MAX_GAS = new BN(1000_000_000_000);

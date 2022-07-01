@@ -1,5 +1,5 @@
 import { OrteliusUTXO } from '@/Explorer';
-import { BN } from '@c4tplatform/avalanche';
+import { BN } from '@c4tplatform/camino';
 import { iHistoryBaseTxTokenOwners } from '@/History';
 
 export function filterDuplicateStrings(vals: string[]) {
