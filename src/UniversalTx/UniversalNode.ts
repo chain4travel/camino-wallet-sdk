@@ -1,4 +1,4 @@
-import { BN } from 'avalanche';
+import { BN } from '@c4tplatform/camino';
 import { ChainIdType } from '@/common';
 import {
     UniversalTx,

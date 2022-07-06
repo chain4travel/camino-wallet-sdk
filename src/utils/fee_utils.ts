@@ -1,5 +1,5 @@
 import { avalanche } from '@/Network/network';
-import { BN } from 'avalanche';
+import { BN } from '@c4tplatform/camino';
 
 /**
  * Returns the transaction fee for X chain.

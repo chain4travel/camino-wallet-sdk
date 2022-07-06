@@ -1,16 +1,16 @@
 import { WalletProvider } from '@/Wallet/Wallet';
 import { UnsafeWallet, WalletNameType } from '@/Wallet/types';
 
-import { KeyChain as AVMKeyChain, UnsignedTx as AVMUnsignedTx, Tx as AVMTx } from 'avalanche/dist/apis/avm';
+import { KeyChain as AVMKeyChain, UnsignedTx as AVMUnsignedTx, Tx as AVMTx } from '@c4tplatform/camino/dist/apis/avm';
 import {
     KeyChain as PlatformKeyChain,
     UnsignedTx as PlatformUnsignedTx,
     Tx as PlatformTx,
-} from 'avalanche/dist/apis/platformvm';
+} from '@c4tplatform/camino/dist/apis/platformvm';
 import { avalanche } from '@/Network/network';
-import { Buffer as BufferAvalanche } from 'avalanche';
+import { Buffer as BufferAvalanche } from '@c4tplatform/camino';
 import { EvmWallet } from '@/Wallet/EVM/EvmWallet';
-import { UnsignedTx, Tx, KeyPair as EVMKeyPair } from 'avalanche/dist/apis/evm';
+import { UnsignedTx, Tx, KeyPair as EVMKeyPair } from '@c4tplatform/camino/dist/apis/evm';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
 import { bintools } from '@/common';
 import { TypedDataV1, TypedMessage } from '@metamask/eth-sig-util';

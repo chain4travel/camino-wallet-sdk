@@ -1,4 +1,4 @@
-import { Buffer as BufferAvalanche } from 'avalanche';
+import { Buffer as BufferAvalanche } from '@c4tplatform/camino';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
 import { avalanche } from '@/Network/network';
 import {
@@ -6,7 +6,7 @@ import {
     KeyPair as EVMKeyPair,
     Tx as EVMTx,
     UnsignedTx as EVMUnsignedTx,
-} from 'avalanche/dist/apis/evm';
+} from '@c4tplatform/camino/dist/apis/evm';
 import { EvmWalletReadonly } from '@/Wallet/EVM/EvmWalletReadonly';
 import { bintools } from '@/common';
 import { computePublicKey } from 'ethers/lib/utils';
