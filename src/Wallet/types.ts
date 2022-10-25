@@ -1,6 +1,6 @@
-import { KeyPair as AVMKeyPair } from '@c4tplatform/camino/dist/apis/avm';
+import { KeyPair as AVMKeyPair } from '@c4tplatform/caminojs/dist/apis/avm';
 
-import { BN } from '@c4tplatform/camino';
+import { BN } from '@c4tplatform/caminojs';
 
 import { MnemonicWallet } from '@/Wallet/MnemonicWallet';
 import { SingletonWallet } from '@/Wallet/SingletonWallet';

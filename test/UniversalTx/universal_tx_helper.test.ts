@@ -1,5 +1,5 @@
 import { createGraphForC, createGraphForP, createGraphForX, UniversalTx } from '@/UniversalTx';
-import { BN } from '@c4tplatform/camino';
+import { BN } from '@c4tplatform/caminojs';
 import { pChain, xChain } from '@/Network/network';
 
 jest.mock('@/Network/network', () => {

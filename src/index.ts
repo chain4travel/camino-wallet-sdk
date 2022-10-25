@@ -9,7 +9,7 @@ export * from './utils';
 export * from './helpers';
 export * from './UniversalTx';
 export * from './Csv';
-export { BN, Buffer } from '@c4tplatform/camino';
+export { BN, Buffer } from '@c4tplatform/caminojs';
 
 import Big from 'big.js';
 

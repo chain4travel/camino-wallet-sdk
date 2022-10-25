@@ -1,4 +1,4 @@
-import { BN } from '@c4tplatform/camino';
+import { BN } from '@c4tplatform/caminojs';
 import { ChainIdType } from '@/common';
 import { iAssetDescriptionClean } from '@/Asset/types';
 

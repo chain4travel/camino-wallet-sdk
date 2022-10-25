@@ -1,6 +1,6 @@
 import { OrteliusUTXO } from '@/Explorer';
 import { iHistoryNftFamilyBalance } from '@/History/types';
-import { AVMConstants } from '@c4tplatform/camino/dist/apis/avm';
+import { AVMConstants } from '@c4tplatform/caminojs/dist/apis/avm';
 import { parseNftPayload } from '@/utils';
 import { isOutputOwner } from '@/Explorer/ortelius/utxoUtils';
 
