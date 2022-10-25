@@ -1,9 +1,9 @@
 import * as bip32 from 'bip32';
 import { activeNetwork, avalanche } from '@/Network/network';
-import { KeyPair as AVMKeyPair, KeyChain as AVMKeyChain } from '@c4tplatform/camino/dist/apis/avm/keychain';
-import { KeyChain as PlatformKeyChain, KeyPair as PlatformKeyPair } from '@c4tplatform/camino/dist/apis/platformvm';
+import { KeyPair as AVMKeyPair, KeyChain as AVMKeyChain } from '@c4tplatform/caminojs/dist/apis/avm/keychain';
+import { KeyChain as PlatformKeyChain, KeyPair as PlatformKeyPair } from '@c4tplatform/caminojs/dist/apis/platformvm';
 import { HdChainType } from './types';
-import { Buffer } from '@c4tplatform/camino';
+import { Buffer } from '@c4tplatform/caminojs';
 import {
     DERIVATION_SLEEP_INTERVAL,
     HD_SCAN_GAP_SIZE,

@@ -27,7 +27,7 @@ import {
     estimateAvaxGas,
     estimateErc20Gas,
 } from '@/helpers/tx_helper';
-import { BN, Buffer } from '@c4tplatform/camino';
+import { BN, Buffer } from '@c4tplatform/caminojs';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
 import { activeNetwork, avalanche, web3 } from '@/Network/network';
 import { EvmWallet } from '@/Wallet/EVM/EvmWallet';
@@ -48,7 +48,7 @@ import {
     Tx as AvmTx,
     AVMConstants,
     AmountOutput,
-} from '@c4tplatform/camino/dist/apis/avm';
+} from '@c4tplatform/caminojs/dist/apis/avm';
 import {
     UTXOSet as PlatformUTXOSet,
     UTXO as PlatformUTXO,
@@ -56,10 +56,10 @@ import {
     Tx as PlatformTx,
     PlatformVMConstants,
     StakeableLockOut,
-} from '@c4tplatform/camino/dist/apis/platformvm';
-import { UnsignedTx as EVMUnsignedTx, Tx as EVMTx, UTXOSet as EVMUTXOSet } from '@c4tplatform/camino/dist/apis/evm';
+} from '@c4tplatform/caminojs/dist/apis/platformvm';
+import { UnsignedTx as EVMUnsignedTx, Tx as EVMTx, UTXOSet as EVMUTXOSet } from '@c4tplatform/caminojs/dist/apis/evm';
 
-import { PayloadBase, UnixNow } from '@c4tplatform/camino/dist/utils';
+import { PayloadBase, UnixNow } from '@c4tplatform/caminojs/dist/utils';
 import { getAssetDescription } from '@/Asset/Assets';
 import { getErc20Token } from '@/Asset/Erc20';
 import { NO_NETWORK } from '@/errors';
@@ -79,7 +79,7 @@ import {
     UniversalTx,
 } from '@/UniversalTx';
 import { UniversalNodeAbstract } from '@/UniversalTx/UniversalNode';
-import { GetStakeResponse } from '@c4tplatform/camino/dist/apis/platformvm/interfaces';
+import { GetStakeResponse } from '@c4tplatform/caminojs/dist/apis/platformvm/interfaces';
 import { networkEvents } from '@/Network/eventEmitter';
 import { NetworkConfig } from '@/Network';
 import { chainIdFromAlias } from '@/Network/helpers/idFromAlias';

@@ -8,8 +8,8 @@ import {
 } from '@/History';
 import * as Assets from '@/Asset/Assets';
 import { bnToLocaleString, getTxFeeX } from '@/utils';
-import { AVMConstants } from '@c4tplatform/camino/dist/apis/avm';
-import { BN } from '@c4tplatform/camino';
+import { AVMConstants } from '@c4tplatform/caminojs/dist/apis/avm';
+import { BN } from '@c4tplatform/caminojs';
 import { getNFTBalanceFromUTXOs, parseMemo } from '@/History/history_helpers';
 import {
     filterDuplicateStrings,

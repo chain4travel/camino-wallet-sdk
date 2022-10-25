@@ -6,7 +6,7 @@ import {
     UniversalTxExportP,
     UniversalTxImportP,
 } from '@/UniversalTx/types';
-import { BN } from '@c4tplatform/camino';
+import { BN } from '@c4tplatform/caminojs';
 
 export default class UniversalNodeP extends UniversalNodeAbstract {
     constructor(balance: BN, feeExport: BN, feeImport: BN) {

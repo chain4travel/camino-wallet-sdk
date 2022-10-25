@@ -1,6 +1,6 @@
 import { iHistoryEVMTx } from '@/History/types';
 import { bnToAvaxC } from '@/utils';
-import { BN } from '@c4tplatform/camino';
+import { BN } from '@c4tplatform/caminojs';
 import { OrteliusEvmTx } from '@/Explorer';
 
 export function getTransactionSummaryEVM(tx: OrteliusEvmTx, walletAddress: string): iHistoryEVMTx {

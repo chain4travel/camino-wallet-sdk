@@ -2,7 +2,7 @@ import { HistoryItemType, HistoryItemTypeName, iHistoryImportExport, iHistoryIte
 import { parseMemo } from '@/History/history_helpers';
 import { activeNetwork, avalanche } from '@/Network/network';
 import { bnToAvaxP, bnToAvaxX } from '@/utils';
-import { BN } from '@c4tplatform/camino';
+import { BN } from '@c4tplatform/caminojs';
 import { getBaseTxSummary } from '@/History/base_tx_parser';
 import { idToChainAlias } from '@/Network/helpers/aliasFromNetworkID';
 import { getExportSummary, getImportSummary } from '@/History/importExportParser';

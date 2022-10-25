@@ -1,4 +1,4 @@
-import { BN } from '@c4tplatform/camino';
+import { BN } from '@c4tplatform/caminojs';
 
 export type UniversalTxActionExportC = 'export_c_x' | 'export_c_p';
 export type UniversalTxActionImportC = 'import_x_c' | 'import_p_c';

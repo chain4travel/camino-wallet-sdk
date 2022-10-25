@@ -22,8 +22,8 @@ import {
     AVMConstants,
     ImportTx as AVMImportTx,
     SelectCredentialClass as AVMSelectCredentialClass,
-} from '@c4tplatform/camino/dist/apis/avm';
-import { Credential, SigIdx, Signature } from '@c4tplatform/camino/dist/common';
+} from '@c4tplatform/caminojs/dist/apis/avm';
+import { Credential, SigIdx, Signature } from '@c4tplatform/caminojs/dist/common';
 import {
     UnsignedTx as EVMUnsignedTx,
     Tx as EVMTx,
@@ -32,7 +32,7 @@ import {
     EVMInput,
     SelectCredentialClass as EVMSelectCredentialClass,
     EVMConstants,
-} from '@c4tplatform/camino/dist/apis/evm';
+} from '@c4tplatform/caminojs/dist/apis/evm';
 import {
     UnsignedTx as PlatformUnsignedTx,
     Tx as PlatformTx,
@@ -40,9 +40,9 @@ import {
     ExportTx as PlatformExportTx,
     ImportTx as PlatformImportTx,
     SelectCredentialClass as PlatformSelectCredentialClass,
-} from '@c4tplatform/camino/dist/apis/platformvm';
+} from '@c4tplatform/caminojs/dist/apis/platformvm';
 import { activeNetwork, avalanche, web3 } from '@/Network/network';
-import { Buffer } from '@c4tplatform/camino';
+import { Buffer } from '@c4tplatform/caminojs';
 import { ChainIdType } from '@/common';
 import { Buffer as BufferNative } from 'buffer';
 import { ParseableAvmTxEnum, ParseablePlatformEnum, ParseableEvmTxEnum } from '@/helpers/tx_helper';
