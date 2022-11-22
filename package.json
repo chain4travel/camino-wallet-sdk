@@ -67,7 +67,6 @@
     },
     "dependencies": {
         "@c4tplatform/caminojs": "file:../caminojs/package",
-        "@ethereumjs/common": "2.6.0",
         "@ethereumjs/tx": "3.4.0",
         "@ledgerhq/hw-app-eth": "6.12.2",
         "@ledgerhq/hw-transport": "^6.19.0",

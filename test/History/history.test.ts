@@ -11,12 +11,6 @@ import { BaseTx, BaseTx1, BaseTx2, BaseTxSend0, BaseTxSend1, BaseTxSend2 } from 
 import { StakeTx0, StakeTx1, StakeTx2, StakeTx3 } from './staking_dumps';
 import { OrteliusAvalancheTx } from '@/Explorer/ortelius/types';
 
-jest.mock('@/Network/setNetwork', () => {
-    return {
-        setNetwork: jest.fn(),
-    };
-});
-
 jest.mock('@/Network/utils', () => {
     return {
         getAvaxAssetID: jest.fn().mockImplementation(() => {

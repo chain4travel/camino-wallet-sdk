@@ -9,8 +9,8 @@ import {
 
 import Web3 from 'web3';
 const addrC = '0x6a23c16777a3A194b2773df90FEB8753A8e619Ee';
-const addrP = 'P-avax19v8flm9qt2gv2tctztjjerlgs4k3vgjsfw8udh';
-const addrX = 'X-avax19v8flm9qt2gv2tctztjjerlgs4k3vgjsfw8udh';
+const addrP = 'P-local19v8flm9qt2gv2tctztjjerlgs4k3vgjssa66wl';
+const addrX = 'X-local19v8flm9qt2gv2tctztjjerlgs4k3vgjssa66wl';
 
 jest.mock('web3', () => {
     return {
@@ -19,7 +19,7 @@ jest.mock('web3', () => {
         },
     };
 });
-jest.mock('@/Network/network', () => {
+jest.mock('../../src/Network/network', () => {
     return {
         avalanche: {
             getHRP: jest.fn(),
@@ -135,8 +135,8 @@ describe('get HRP', () => {
     it('Return avax HRP', () => {
         let res = getAddressHRP(addrX);
         let res2 = getAddressHRP(addrP);
-        expect(res).toBe('avax');
-        expect(res2).toBe('avax');
+        expect(res).toBe('local');
+        expect(res2).toBe('local');
     });
 
     it('Return fuji HRP', () => {
