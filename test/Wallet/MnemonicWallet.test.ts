@@ -1,6 +1,6 @@
 import { MnemonicWallet } from '@/Wallet/MnemonicWallet';
 import { TEST_MNEMONIC } from './constants';
-import { recoverPersonalSignature } from '@metamask/eth-sig-util';
+
 jest.mock('web3', () => {
     let web3Mock: any = jest.fn().mockImplementation(() => {});
 
@@ -13,11 +13,10 @@ jest.mock('web3', () => {
 
 jest.mock('@/Network/network', () => {
     return {
-        avalanche: {
+        avalanche: jest.fn().mockReturnValue({
             getNetworkID: jest.fn().mockReturnValue(1),
-            getHRP: jest.fn().mockReturnValue('avax'),
-        },
-
+            getHRP: jest.fn().mockReturnValue('local'),
+        }),
         //@ts-ignore
         web3: {
             providers: {
@@ -34,21 +33,15 @@ jest.mock('@/Network/network', () => {
     };
 });
 
-jest.mock('@/Network/index', () => {
-    return {
-        setNetwork: jest.fn().mockImplementation(() => function () {}),
-    };
-});
-
 describe('Mnemonic Wallet', () => {
     const wallet = MnemonicWallet.fromMnemonic(TEST_MNEMONIC);
 
     it('can return initial X address', () => {
-        expect(wallet.getAddressX()).toEqual('X-avax19v8flm9qt2gv2tctztjjerlgs4k3vgjsfw8udh');
+        expect(wallet.getAddressX()).toEqual('X-local19v8flm9qt2gv2tctztjjerlgs4k3vgjssa66wl');
     });
 
     it('can return initial P address', () => {
-        expect(wallet.getAddressP()).toEqual('P-avax19v8flm9qt2gv2tctztjjerlgs4k3vgjsfw8udh');
+        expect(wallet.getAddressP()).toEqual('P-local19v8flm9qt2gv2tctztjjerlgs4k3vgjssa66wl');
     });
 
     it('can return initial C address', () => {
@@ -56,6 +49,6 @@ describe('Mnemonic Wallet', () => {
     });
 
     it('can return C chain bech32 address', () => {
-        expect(wallet.getEvmAddressBech()).toEqual('C-avax1t5dhkc4myzvyqsct3dmaue2hc43na8qh3v6xx4');
+        expect(wallet.getEvmAddressBech()).toEqual('C-local1t5dhkc4myzvyqsct3dmaue2hc43na8qhgl8q9a');
     });
 });

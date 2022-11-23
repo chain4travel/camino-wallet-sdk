@@ -3,10 +3,8 @@ import * as bip32 from 'bip32';
 import { getAccountPathAvalanche } from '@/Wallet/helpers/derivationHelper';
 import { TEST_MNEMONIC, TEST_MNEMONIC_ADDRS_EXT, TEST_MNEMONIC_ADDRS_INT } from './constants';
 import { HdScanner } from '@/Wallet/HdScanner';
-import { activeNetwork, avalanche, explorer_api } from '@/Network/network';
 import { getAddressChains } from '@/Explorer';
 import { HD_SCAN_GAP_SIZE } from '@/Wallet/constants';
-import { add } from 'husky';
 
 const seed = bip39.mnemonicToSeedSync(TEST_MNEMONIC);
 let masterHdKey = bip32.fromSeed(seed);
@@ -17,9 +15,10 @@ jest.mock('@/Network/network', () => {
         activeNetwork: {
             explorerURL: 'test.explorer.network',
         },
-        avalanche: {
+        avalanche: jest.fn().mockReturnValue({
             getNetworkID: jest.fn().mockReturnValue(1),
-        },
+            getHRP: jest.fn().mockReturnValue('local'),
+        }),
         explorer_api: {},
     };
 });

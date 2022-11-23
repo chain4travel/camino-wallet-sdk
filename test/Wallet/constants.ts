@@ -2,16 +2,16 @@ export const TEST_MNEMONIC =
     'chimney noodle canyon tunnel sample stuff scan symbol sight club net own arrive cause suffer purity manage squirrel boost diesel bring cement father slide';
 
 export const TEST_MNEMONIC_ADDRS_EXT = [
-    'X-avax19v8flm9qt2gv2tctztjjerlgs4k3vgjsfw8udh',
-    'X-avax1vu6mxvgjc5yxevfm0hkz7gldaakeatw5qnuwtw',
-    'X-avax1k0zecdwk7dq5f7k0nq7e4jfp735rkktpgszyud',
-    'X-avax1hr82veadxxtu9t3d92znw0h8z6yrw4m2zqn23c',
-    'X-avax1l2zvycg6sqmnk5tpfy4cnyrukkj62c5eyxn5xw',
-    'X-avax19aap6sk83kq82jvmn6sxz22kxfzqysztnqrj26',
-    'X-avax1vly09cdgx49m7ttxhfpsptufwv9my28snda70f',
-    'X-avax1qkc7g5wan8ur3wwl9chs7jacr09uv4gysxfwre',
-    'X-avax1m443clxpf3mnkvqf5y8mx0ph5pulywl5vts5md',
-    'X-avax1jdyd2phcszd60yxxa4vuh7k2u6wcsarleknz63',
+    'X-local19v8flm9qt2gv2tctztjjerlgs4k3vgjssa66wl',
+    'X-local1vu6mxvgjc5yxevfm0hkz7gldaakeatw5eqpggx',
+    'X-local1k0zecdwk7dq5f7k0nq7e4jfp735rkktp3rlzl9',
+    'X-local1hr82veadxxtu9t3d92znw0h8z6yrw4m2mnwvjs',
+    'X-local1l2zvycg6sqmnk5tpfy4cnyrukkj62c5ea4wj9x',
+    'X-local19aap6sk83kq82jvmn6sxz22kxfzqyszt2n75fj',
+    'X-local1vly09cdgx49m7ttxhfpsptufwv9my28s27qcvp',
+    'X-local1qkc7g5wan8ur3wwl9chs7jacr09uv4gyf45gq3',
+    'X-local1m443clxpf3mnkvqf5y8mx0ph5pulywl54cdjc9',
+    'X-local1jdyd2phcszd60yxxa4vuh7k2u6wcsarlq9wyee',
     'X-avax1z0d3c65gf6s5xs2vtuvj4wgzu06qpq0prukfpm',
     'X-avax1wy3f8ch5p9swxhqq05rfwx0p5e0zgxsmcu63nw',
     'X-avax17hp3z4tztzpjd2mky06zr8gxn73gjqqk4h7zcc',
@@ -37,16 +37,16 @@ export const TEST_MNEMONIC_ADDRS_EXT = [
 ];
 
 export const TEST_MNEMONIC_ADDRS_INT = [
-    'X-avax1fp5jw95s3s0sgylt5yvegpu03k5aggtypgpe02',
-    'X-avax1fznl9qusl8el0dxh537hg79m7ekwlefjq5yfne',
-    'X-avax1dw73j6ye5ggt9ug8v3mdt58tnj0zgl2y9dh756',
-    'X-avax1jcx7ew3ccle52fannlj5tn3w7cfztuma03qk6j',
-    'X-avax1gd8f5qsn3sc4ytec5mt22nx7p92xjqhy44v8l3',
-    'X-avax130sz65vj7wpley6wnf7egcp4hx655j9kxzhlpe',
-    'X-avax13k783468dxadfmjv0p64exul0pd3ewuh4z4p28',
-    'X-avax10lhjdztmg0n5jendxp24x7jj3jrfktcg72l4cg',
-    'X-avax1kqzasrwth7v005xgspdq79qz6lergm776emapl',
-    'X-avax16cxcg2kdvajvg49mf646u5u00487tgpv4cwjq5',
+    'X-local1fp5jw95s3s0sgylt5yvegpu03k5aggtycmulvz',
+    'X-local1fznl9qusl8el0dxh537hg79m7ekwlefje8e0s3',
+    'X-local1dw73j6ye5ggt9ug8v3mdt58tnj0zgl2yu72chj',
+    'X-local1jcx7ew3ccle52fannlj5tn3w7cfztumakzase6',
+    'X-local1gd8f5qsn3sc4ytec5mt22nx7p92xjqhyvx3pue',
+    'X-local130sz65vj7wpley6wnf7egcp4hx655j9kl32ez3',
+    'X-local13k783468dxadfmjv0p64exul0pd3ewuhv3g8f0',
+    'X-local10lhjdztmg0n5jendxp24x7jj3jrfktcg8eznmq',
+    'X-local1kqzasrwth7v005xgspdq79qz6lergm77r2xmzh',
+    'X-local16cxcg2kdvajvg49mf646u5u00487tgpvvtn5ru',
     'X-avax16xzgjae27pqhye5jxyrake5yv7cj4yawa6g706',
 ];
 

@@ -3,7 +3,7 @@ name: CI
 on:
     push:
         branches:
-            - master
+            - chain4travel
             - dev
     pull_request:
 

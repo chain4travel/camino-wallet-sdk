@@ -1,6 +1,6 @@
 import { createGraphForC, createGraphForP, createGraphForX, UniversalTx } from '@/UniversalTx';
 import { BN } from '@c4tplatform/caminojs';
-import { pChain, xChain } from '@/Network/network';
+import { getTxFeeX, getTxFeeP } from '@/utils';
 
 jest.mock('@/Network/network', () => {
     return {
@@ -9,12 +9,13 @@ jest.mock('@/Network/network', () => {
                 isAddress: jest.fn().mockReturnValue(true),
             },
         },
-        pChain: {
-            getTxFee: jest.fn(),
-        },
-        xChain: {
-            getTxFee: jest.fn(),
-        },
+    };
+});
+
+jest.mock('@/utils/fee_utils', () => {
+    return {
+        getTxFeeX: jest.fn(),
+        getTxFeeP: jest.fn(),
     };
 });
 
@@ -34,8 +35,8 @@ function compareSteps(steps: UniversalTx[], expected: UniversalTx[]) {
 
 describe('Reduce parent balance of UniversalNode P', () => {
     beforeEach(() => {
-        (pChain.getTxFee as jest.Mock).mockReturnValue(FEE_XP);
-        (xChain.getTxFee as jest.Mock).mockReturnValue(FEE_XP);
+        (getTxFeeP as jest.Mock).mockReturnValue(FEE_XP);
+        (getTxFeeX as jest.Mock).mockReturnValue(FEE_XP);
     });
 
     it('all parents have balance of 1 AVAX', () => {
@@ -85,8 +86,8 @@ describe('Reduce parent balance of UniversalNode P', () => {
 
 describe('Reduce parent balance of UniversalNode X', () => {
     beforeEach(() => {
-        (pChain.getTxFee as jest.Mock).mockReturnValue(FEE_XP);
-        (xChain.getTxFee as jest.Mock).mockReturnValue(FEE_XP);
+        (getTxFeeP as jest.Mock).mockReturnValue(FEE_XP);
+        (getTxFeeX as jest.Mock).mockReturnValue(FEE_XP);
     });
 
     it('all nodes have balance of 1 AVAX', () => {
@@ -158,8 +159,8 @@ describe('Reduce parent balance of UniversalNode X', () => {
 
 describe('Reduce parent balance of UniversalNode C', () => {
     beforeEach(() => {
-        (pChain.getTxFee as jest.Mock).mockReturnValue(FEE_XP);
-        (xChain.getTxFee as jest.Mock).mockReturnValue(FEE_XP);
+        (getTxFeeP as jest.Mock).mockReturnValue(FEE_XP);
+        (getTxFeeX as jest.Mock).mockReturnValue(FEE_XP);
     });
 
     it('all nodes have balance of 1 AVAX', () => {
@@ -231,8 +232,8 @@ describe('Reduce parent balance of UniversalNode C', () => {
 
 describe('Get transactions for balance on UniversalNode P', () => {
     beforeEach(() => {
-        (pChain.getTxFee as jest.Mock).mockReturnValue(FEE_XP);
-        (xChain.getTxFee as jest.Mock).mockReturnValue(FEE_XP);
+        (getTxFeeP as jest.Mock).mockReturnValue(FEE_XP);
+        (getTxFeeX as jest.Mock).mockReturnValue(FEE_XP);
     });
 
     it('node has enough balance, return empty array', () => {

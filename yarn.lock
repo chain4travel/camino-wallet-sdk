@@ -919,27 +919,6 @@
   resolved "https://registry.npmjs.org/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@c4tplatform/caminojs@file:../caminojs":
-  version "1.0.0"
-  dependencies:
-    assert "2.0.0"
-    axios "0.27.2"
-    bech32 "2.0.0"
-    bip39 "3.0.4"
-    bn.js "5.2.1"
-    buffer "6.0.3"
-    create-hash "1.2.0"
-    crypto-browserify "3.12.0"
-    elliptic "6.5.4"
-    ethers "5.7.0"
-    hdkey "2.0.1"
-    isomorphic-ws "5.0.0"
-    randombytes "^2.1.0"
-    store2 "2.14.2"
-    stream-browserify "3.0.0"
-    ws "8.8.1"
-    xss "1.0.14"
-
 "@c4tplatform/caminojs@file:../caminojs/package":
   version "1.0.0"
   dependencies:
@@ -984,7 +963,7 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@ethereumjs/common@2.6.0", "@ethereumjs/common@^2.3.0", "@ethereumjs/common@^2.4.0", "@ethereumjs/common@^2.6.0":
+"@ethereumjs/common@^2.3.0", "@ethereumjs/common@^2.4.0", "@ethereumjs/common@^2.6.0":
   version "2.6.0"
   resolved "https://registry.npmjs.org/@ethereumjs/common/-/common-2.6.0.tgz"
   integrity sha512-Cq2qS0FTu6O2VU1sgg+WyU9Ps0M6j/BEMHN+hRaECXCV/r0aI78u4N6p52QW/BDVhwWZpCdrvG8X7NJdzlpNUA==

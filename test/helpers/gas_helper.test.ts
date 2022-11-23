@@ -1,18 +1,20 @@
 import { adjustValue, getBaseFee, getGasPrice, getMaxPriorityFee } from '@/helpers/gas_helper';
-import { cChain, setRpcNetwork, web3 } from '@/Network/network';
+import { avalanche, web3 } from '@/Network/network';
 import BN from 'bn.js';
 
 jest.mock('@/Network/network', () => {
     return {
-        cChain: {
-            getBaseFee: jest.fn(),
-            getMaxPriorityFeePerGas: jest.fn(),
-        },
         web3: {
             eth: {
                 getGasPrice: jest.fn(),
             },
         },
+        avalanche: jest.fn().mockReturnValue({
+            CChain: jest.fn().mockReturnValue({
+                getBaseFee: jest.fn(),
+                getMaxPriorityFeePerGas: jest.fn(),
+            }),
+        }),
         setRpcNetwork: jest.fn(),
     };
 });
@@ -29,14 +31,14 @@ describe('getGasPrice', () => {
 describe('getBaseFee', () => {
     it('0 base fee', async () => {
         //@ts-ignore
-        cChain.getBaseFee.mockReturnValueOnce('0x0');
+        avalanche().CChain().getBaseFee.mockReturnValueOnce('0x0');
         let baseFee = await getBaseFee();
         expect(baseFee.toString()).toEqual('0');
     });
 
     it('1 gwei', async () => {
         //@ts-ignore
-        cChain.getBaseFee.mockReturnValueOnce('0x3B9ACA00');
+        avalanche().CChain().getBaseFee.mockReturnValueOnce('0x3B9ACA00');
         let baseFee = await getBaseFee();
         expect(baseFee).toEqual(new BN(1_000_000_000));
     });
@@ -45,14 +47,14 @@ describe('getBaseFee', () => {
 describe('getMaxPriorityFee', () => {
     it('0 fee', async () => {
         //@ts-ignore
-        cChain.getMaxPriorityFeePerGas.mockReturnValueOnce('0x0');
+        avalanche().CChain().getMaxPriorityFeePerGas.mockReturnValueOnce('0x0');
         let fee = await getMaxPriorityFee();
         expect(fee.toString()).toEqual('0');
     });
 
     it('1 gwei', async () => {
         //@ts-ignore
-        cChain.getMaxPriorityFeePerGas.mockReturnValueOnce('0x3B9ACA00');
+        avalanche().CChain().getMaxPriorityFeePerGas.mockReturnValueOnce('0x3B9ACA00');
         let fee = await getMaxPriorityFee();
         expect(fee.toString()).toEqual('1000000000');
     });
