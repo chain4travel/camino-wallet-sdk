@@ -2,7 +2,7 @@ import * as bip39 from 'bip39';
 import * as bip32 from 'bip32';
 import { EvmWallet } from './EVM/EvmWallet';
 import { UnsafeWallet, WalletNameType } from './types';
-import { Buffer } from '@c4tplatform/caminojs';
+import { Buffer } from '@c4tplatform/caminojs/dist';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
 import { Tx as AVMTx, UnsignedTx as AVMUnsignedTx } from '@c4tplatform/caminojs/dist/apis/avm';
 import { Tx as PlatformTx, UnsignedTx as PlatformUnsignedTx } from '@c4tplatform/caminojs/dist/apis/platformvm';

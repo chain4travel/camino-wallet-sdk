@@ -8,7 +8,7 @@ import {
     Tx as PlatformTx,
 } from '@c4tplatform/caminojs/dist/apis/platformvm';
 import { avalanche } from '@/Network/network';
-import { Buffer as BufferAvalanche } from '@c4tplatform/caminojs';
+import { Buffer as BufferAvalanche } from '@c4tplatform/caminojs/dist';
 import { EvmWallet } from '@/Wallet/EVM/EvmWallet';
 import { UnsignedTx, Tx, KeyPair as EVMKeyPair } from '@c4tplatform/caminojs/dist/apis/evm';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';

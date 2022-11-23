@@ -1,4 +1,4 @@
-import { Buffer as BufferAvalanche } from '@c4tplatform/caminojs';
+import { Buffer as BufferAvalanche } from '@c4tplatform/caminojs/dist';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
 import { avalanche } from '@/Network/network';
 import {

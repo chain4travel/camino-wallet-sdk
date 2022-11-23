@@ -18,7 +18,8 @@
         "test:watch": "jest --watch",
         "lint": "eslint .",
         "docs": "typedoc",
-        "docs:watch": "typedoc --watch"
+        "docs:watch": "typedoc --watch",
+        "preinstall": "git submodule init && git submodule update --checkout"
     },
     "lint-staged": {
         "**/*": "prettier --write --ignore-unknown"
@@ -39,10 +40,13 @@
         "@rollup/plugin-commonjs": "^21.0.1",
         "@rollup/plugin-json": "^4.1.0",
         "@rollup/plugin-typescript": "^8.2.1",
+        "@types/babel__generator": "^7.6.4",
+        "@types/babel__template": "^7.4.1",
         "@types/big.js": "^6.0.2",
         "@types/bn.js": "4.11.6",
         "@types/create-hash": "^1.2.2",
         "@types/crypto-js": "^4.1.0",
+        "@types/estree": "^1.0.0",
         "@types/hdkey": "^2.0.0",
         "@types/jest": "^26.0.23",
         "@types/randomstring": "^1.1.8",
@@ -66,7 +70,7 @@
         "typescript": "^4.2.4"
     },
     "dependencies": {
-        "@c4tplatform/caminojs": "file:../caminojs/package",
+        "@c4tplatform/caminojs": "file:caminojs",
         "@ethereumjs/tx": "3.4.0",
         "@ledgerhq/hw-app-eth": "6.12.2",
         "@ledgerhq/hw-transport": "^6.19.0",

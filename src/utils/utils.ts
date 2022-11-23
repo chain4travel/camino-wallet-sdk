@@ -1,4 +1,4 @@
-import { Buffer as BufferAvalanche } from '@c4tplatform/caminojs';
+import { Buffer as BufferAvalanche } from '@c4tplatform/caminojs/dist';
 import { validateAddress } from '@/helpers/address_helper';
 import createHash from 'create-hash';
 import { PayloadBase, PayloadTypes } from '@c4tplatform/caminojs/dist/utils';

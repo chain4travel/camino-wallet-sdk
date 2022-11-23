@@ -1,4 +1,4 @@
-import { BN } from '@c4tplatform/caminojs';
+import { BN } from '@c4tplatform/caminojs/dist';
 import Big from 'big.js';
 
 declare module 'big.js' {

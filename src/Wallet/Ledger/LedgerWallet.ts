@@ -42,7 +42,7 @@ import {
     SelectCredentialClass as PlatformSelectCredentialClass,
 } from '@c4tplatform/caminojs/dist/apis/platformvm';
 import { activeNetwork, avalanche, web3 } from '@/Network/network';
-import { Buffer } from '@c4tplatform/caminojs';
+import { Buffer } from '@c4tplatform/caminojs/dist';
 import { ChainIdType } from '@/common';
 import { Buffer as BufferNative } from 'buffer';
 import { ParseableAvmTxEnum, ParseablePlatformEnum, ParseableEvmTxEnum } from '@/helpers/tx_helper';

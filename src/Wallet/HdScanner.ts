@@ -3,7 +3,7 @@ import { activeNetwork, avalanche } from '@/Network/network';
 import { KeyPair as AVMKeyPair, KeyChain as AVMKeyChain } from '@c4tplatform/caminojs/dist/apis/avm/keychain';
 import { KeyChain as PlatformKeyChain, KeyPair as PlatformKeyPair } from '@c4tplatform/caminojs/dist/apis/platformvm';
 import { HdChainType } from './types';
-import { Buffer } from '@c4tplatform/caminojs';
+import { Buffer } from '@c4tplatform/caminojs/dist';
 import {
     DERIVATION_SLEEP_INTERVAL,
     HD_SCAN_GAP_SIZE,

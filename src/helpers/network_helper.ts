@@ -1,6 +1,6 @@
 import { NetworkConfig } from '@/Network/types';
 
-import { Avalanche } from '@c4tplatform/caminojs';
+import { Avalanche } from '@c4tplatform/caminojs/dist';
 import { HttpClient } from './http_client';
 
 export function wsUrlFromConfigX(config: NetworkConfig): string {
