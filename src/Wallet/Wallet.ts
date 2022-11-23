@@ -27,7 +27,7 @@ import {
     estimateAvaxGas,
     estimateErc20Gas,
 } from '@/helpers/tx_helper';
-import { BN, Buffer } from '@c4tplatform/caminojs';
+import { BN, Buffer } from '@c4tplatform/caminojs/dist';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
 import { activeNetwork, avalanche, web3 } from '@/Network/network';
 import { EvmWallet } from '@/Wallet/EVM/EvmWallet';

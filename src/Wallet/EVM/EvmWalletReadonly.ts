@@ -1,4 +1,4 @@
-import { BN, Buffer as BufferAvalanche } from '@c4tplatform/caminojs';
+import { BN, Buffer as BufferAvalanche } from '@c4tplatform/caminojs/dist';
 import { avalanche, web3 } from '@/Network/network';
 import { ethers } from 'ethers';
 import { KeyPair as EVMKeyPair } from '@c4tplatform/caminojs/dist/apis/evm/keychain';

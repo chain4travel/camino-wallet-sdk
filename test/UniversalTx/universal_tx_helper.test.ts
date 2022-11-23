@@ -1,5 +1,5 @@
 import { createGraphForC, createGraphForP, createGraphForX, UniversalTx } from '@/UniversalTx';
-import { BN } from '@c4tplatform/caminojs';
+import { BN } from '@c4tplatform/caminojs/dist';
 import { getTxFeeX, getTxFeeP } from '@/utils';
 
 jest.mock('@/Network/network', () => {

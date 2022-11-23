@@ -1,5 +1,5 @@
 import { activeNetwork, avalanche, web3 } from '@/Network/network';
-import { BN } from '@c4tplatform/caminojs';
+import { BN } from '@c4tplatform/caminojs/dist';
 import {
     EVMInput,
     ExportTx,

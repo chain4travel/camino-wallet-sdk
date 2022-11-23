@@ -1,0 +1,4 @@
+[submodule "caminojs"]
+	path = caminojs
+	url = https://github.com/chain4travel/caminojs.git
+	branch = dev-dist

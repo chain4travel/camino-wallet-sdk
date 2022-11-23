@@ -1,6 +1,6 @@
 import { avalanche, ethersProvider, web3 } from '@/Network/network';
 
-import { BN, Buffer } from '@c4tplatform/caminojs';
+import { BN, Buffer } from '@c4tplatform/caminojs/dist';
 import {
     AVMConstants,
     MinterSet,

@@ -1,5 +1,5 @@
 import Sockette from 'sockette';
-import { PubSub } from '@c4tplatform/caminojs';
+import { PubSub } from '@c4tplatform/caminojs/dist';
 import { WalletType } from '@/Wallet/types';
 
 const FILTER_ADDRESS_SIZE = 1000;

@@ -1,5 +1,5 @@
 import * as Utils from '@/utils';
-import { BN } from '@c4tplatform/caminojs';
+import { BN } from '@c4tplatform/caminojs/dist';
 
 describe('stringToBN', () => {
     it('no decimals', () => {
