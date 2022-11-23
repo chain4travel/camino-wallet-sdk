@@ -19,7 +19,7 @@
         "lint": "eslint .",
         "docs": "typedoc",
         "docs:watch": "typedoc --watch",
-        "preinstall": "git submodule init && git submodule update --checkout"
+        "preinstall": "bash ./scripts/prepare_submodules.sh"
     },
     "lint-staged": {
         "**/*": "prettier --write --ignore-unknown"
