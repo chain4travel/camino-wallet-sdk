@@ -19,10 +19,9 @@
         "lint": "eslint .",
         "docs": "typedoc",
         "docs:watch": "typedoc --watch",
-        "preinstall": "bash ./scripts/prepare_submodules.sh"
-    },
-    "lint-staged": {
-        "**/*": "prettier --write --ignore-unknown"
+        "preinstall": "bash ./scripts/prepare_submodules.sh",
+        "prettier": "prettier --write src/",
+        "prettier-check": "prettier --check src/"
     },
     "name": "@c4tplatform/camino-wallet-sdk",
     "author": "AVA Labs",
@@ -58,7 +57,6 @@
         "eslint": "^7.25.0",
         "eslint-config-prettier": "^8.3.0",
         "jest": "^26.6.3",
-        "lint-staged": "^10.5.4",
         "prettier": "2.2.1",
         "rollup": "^2.47.0",
         "rollup-plugin-delete": "^2.0.0",
