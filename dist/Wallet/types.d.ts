@@ -1,4 +1,3 @@
-/// <reference types="bn.js" />
 import { KeyPair as AVMKeyPair } from '@c4tplatform/caminojs/dist/apis/avm';
 import { BN } from '@c4tplatform/caminojs/dist';
 import { MnemonicWallet } from "./MnemonicWallet";

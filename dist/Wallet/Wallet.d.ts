@@ -1,5 +1,4 @@
 /// <reference types="node" />
-/// <reference types="bn.js" />
 import { AssetBalanceP, AssetBalanceRawX, BTCNetworkType, ERC20Balance, ExportChainsC, ExportChainsP, ExportChainsX, iAvaxBalance, WalletBalanceX, WalletEventArgsType, WalletEventType, WalletNameType } from './types';
 import { BN } from '@c4tplatform/caminojs/dist';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';

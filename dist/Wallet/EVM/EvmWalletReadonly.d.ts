@@ -1,4 +1,3 @@
-/// <reference types="bn.js" />
 /// <reference types="node" />
 import { BN } from '@c4tplatform/caminojs/dist';
 import { BTCNetworkType } from "./..";

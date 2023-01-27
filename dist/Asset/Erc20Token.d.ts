@@ -1,4 +1,3 @@
-/// <reference types="bn.js" />
 import { Erc20TokenData } from "./types";
 import { BN } from '@c4tplatform/caminojs/dist';
 import { Contract } from 'web3-eth-contract';

@@ -1,4 +1,3 @@
-/// <reference types="bn.js" />
 import { BN } from '@c4tplatform/caminojs/dist';
 export declare type UniversalTxActionExportC = 'export_c_x' | 'export_c_p';
 export declare type UniversalTxActionImportC = 'import_x_c' | 'import_p_c';

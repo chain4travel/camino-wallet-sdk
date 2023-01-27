@@ -1,4 +1,3 @@
-/// <reference types="bn.js" />
 import { OrteliusAvalancheTx } from "./..";
 import { BN } from '@c4tplatform/caminojs/dist';
 /**

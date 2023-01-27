@@ -1,4 +1,3 @@
-/// <reference types="bn.js" />
 import { BN } from '@c4tplatform/caminojs/dist';
 /**
  * Returns the transaction fee for X chain.

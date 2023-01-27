@@ -1,4 +1,3 @@
-/// <reference types="bn.js" />
 import { OrteliusUTXO } from "./..";
 import { BN } from '@c4tplatform/caminojs/dist';
 import { iHistoryBaseTxTokenOwners } from "../../History";
