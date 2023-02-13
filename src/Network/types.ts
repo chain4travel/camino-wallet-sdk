@@ -13,6 +13,7 @@ export interface NetworkConfig {
     apiPort: number;
     explorerURL?: string;
     explorerSiteURL?: string;
+    signavaultURL?: string;
     networkID: number;
     evmChainID: number;
     xChainID: string;
