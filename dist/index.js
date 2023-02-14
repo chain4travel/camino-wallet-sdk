@@ -222,6 +222,15 @@ function createExplorerApi(networkConfig) {
     return new HttpClient(networkConfig.explorerURL);
 }
 /**
+ * Given a network configuration returns an HttpClient instance connected to the signavault
+ */
+function createSignavaultApi(networkConfig) {
+    if (!networkConfig.signavaultURL) {
+        throw new Error('Network configuration does not specify an explorer API.');
+    }
+    return new HttpClient(networkConfig.signavaultURL);
+}
+/**
  * Checks if the given network accepts credentials.
  * This must be true to use cookies.
  */
@@ -255,6 +264,7 @@ var network_helper = /*#__PURE__*/Object.freeze({
     getNetworkIdFromURL: getNetworkIdFromURL,
     createAvalancheProvider: createAvalancheProvider,
     createExplorerApi: createExplorerApi,
+    createSignavaultApi: createSignavaultApi,
     canUseCredentials: canUseCredentials
 });
 

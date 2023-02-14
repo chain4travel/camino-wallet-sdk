@@ -14,6 +14,10 @@ export declare function createAvalancheProvider(config: NetworkConfig): Avalanch
  */
 export declare function createExplorerApi(networkConfig: NetworkConfig): HttpClient;
 /**
+ * Given a network configuration returns an HttpClient instance connected to the signavault
+ */
+export declare function createSignavaultApi(networkConfig: NetworkConfig): HttpClient;
+/**
  * Checks if the given network accepts credentials.
  * This must be true to use cookies.
  */
