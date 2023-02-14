@@ -48,6 +48,17 @@ export function createExplorerApi(networkConfig: NetworkConfig) {
 }
 
 /**
+ * Given a network configuration returns an HttpClient instance connected to the signavault
+ */
+export function createSignavaultApi(networkConfig: NetworkConfig) {
+    if (!networkConfig.signavaultURL) {
+        throw new Error('Network configuration does not specify an explorer API.');
+    }
+
+    return new HttpClient(networkConfig.signavaultURL);
+}
+
+/**
  * Checks if the given network accepts credentials.
  * This must be true to use cookies.
  */
