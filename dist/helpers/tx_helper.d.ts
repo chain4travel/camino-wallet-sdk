@@ -3,6 +3,8 @@ import { UnsignedTx as AVMUnsignedTx, UTXO as AVMUTXO, UTXOSet as AVMUTXOSet, UT
 import { PayloadBase } from '@c4tplatform/caminojs/dist/utils';
 import { UTXOSet as PlatformUTXOSet } from '@c4tplatform/caminojs/dist/apis/platformvm';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
+import ERC20Abi from "../Abi/ERC20.json";
+import ERC721Abi from "../Abi/ERC721.json";
 import { ExportChainsC, ExportChainsP, ExportChainsX } from "../Wallet/types";
 export declare function buildCreateNftFamilyTx(name: string, symbol: string, groupNum: number, fromAddrs: string[], minterAddr: string, changeAddr: string, utxoSet: UTXOSet): Promise<AVMUnsignedTx>;
 export declare function buildMintNftTx(mintUtxo: AVMUTXO, payload: PayloadBase, quantity: number, ownerAddress: string, changeAddress: string, fromAddresses: string[], utxoSet: UTXOSet): Promise<AVMUnsignedTx>;
@@ -80,3 +82,4 @@ export declare enum ParseableEvmTxEnum {
     'Import',
     'Export'
 }
+export { ERC20Abi, ERC721Abi };

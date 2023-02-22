@@ -1,25 +1,25 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 var Web3 = require('web3');
 var constants = require('@c4tplatform/caminojs/dist/utils/constants');
 var dist = require('@c4tplatform/caminojs/dist');
 var ethers = require('ethers');
+var EventEmitter = require('events');
+var avm = require('@c4tplatform/caminojs/dist/apis/avm');
+var common = require('@c4tplatform/caminojs/dist/common');
+var platformvm = require('@c4tplatform/caminojs/dist/apis/platformvm');
+var evm = require('@c4tplatform/caminojs/dist/apis/evm');
+var tx = require('@ethereumjs/tx');
+var common$1 = require('@ethereumjs/common');
 var xss = require('xss');
 var Sockette = require('sockette');
 var _ = require('buffer/');
 var createHash = require('create-hash');
 var bip39 = require('bip39');
-var EthereumjsCommon = require('@ethereumjs/common');
-var ethereumjsUtil = require('ethereumjs-util');
+var rlp = require('@ethereumjs/rlp');
 var HDKey = require('hdkey');
-var tx = require('@ethereumjs/tx');
-var avm = require('@c4tplatform/caminojs/dist/apis/avm');
-var common = require('@c4tplatform/caminojs/dist/common');
-var evm = require('@c4tplatform/caminojs/dist/apis/evm');
-var platformvm = require('@c4tplatform/caminojs/dist/apis/platformvm');
 var buffer = require('buffer');
+var bippath = require('bip32-path');
 var utils = require('@c4tplatform/caminojs/dist/utils');
 var Big = require('big.js');
 var CryptoJS = require('crypto-js/core');
@@ -31,13 +31,11 @@ var utils$1 = require('ethers/lib/utils');
 var bitcoin = require('bitcoinjs-lib');
 var bip32 = require('bip32');
 var Eth = require('@ledgerhq/hw-app-eth');
+var AppAvax = require('@obsidiansystems/hw-app-avalanche');
 var ethSigUtil = require('@metamask/eth-sig-util');
 var moment = require('moment');
 
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-function _interopNamespace(e) {
-    if (e && e.__esModule) return e;
+function _interopNamespaceDefault(e) {
     var n = Object.create(null);
     if (e) {
         Object.keys(e).forEach(function (k) {
@@ -45,32 +43,18 @@ function _interopNamespace(e) {
                 var d = Object.getOwnPropertyDescriptor(e, k);
                 Object.defineProperty(n, k, d.get ? d : {
                     enumerable: true,
-                    get: function () {
-                        return e[k];
-                    }
+                    get: function () { return e[k]; }
                 });
             }
         });
     }
-    n['default'] = e;
+    n.default = e;
     return Object.freeze(n);
 }
 
-var Web3__default = /*#__PURE__*/_interopDefaultLegacy(Web3);
-var xss__default = /*#__PURE__*/_interopDefaultLegacy(xss);
-var Sockette__default = /*#__PURE__*/_interopDefaultLegacy(Sockette);
-var createHash__default = /*#__PURE__*/_interopDefaultLegacy(createHash);
-var bip39__namespace = /*#__PURE__*/_interopNamespace(bip39);
-var EthereumjsCommon__default = /*#__PURE__*/_interopDefaultLegacy(EthereumjsCommon);
-var HDKey__default = /*#__PURE__*/_interopDefaultLegacy(HDKey);
-var Big__default = /*#__PURE__*/_interopDefaultLegacy(Big);
-var CryptoJS__default = /*#__PURE__*/_interopDefaultLegacy(CryptoJS);
-var AES__default = /*#__PURE__*/_interopDefaultLegacy(AES);
-var randomstring__default = /*#__PURE__*/_interopDefaultLegacy(randomstring);
-var bitcoin__namespace = /*#__PURE__*/_interopNamespace(bitcoin);
-var bip32__namespace = /*#__PURE__*/_interopNamespace(bip32);
-var Eth__default = /*#__PURE__*/_interopDefaultLegacy(Eth);
-var moment__default = /*#__PURE__*/_interopDefaultLegacy(moment);
+var bip39__namespace = /*#__PURE__*/_interopNamespaceDefault(bip39);
+var bitcoin__namespace = /*#__PURE__*/_interopNamespaceDefault(bitcoin);
+var bip32__namespace = /*#__PURE__*/_interopNamespaceDefault(bip32);
 
 function getRpcC(conf) {
     return `${conf.apiProtocol}://${conf.apiIp}:${conf.apiPort}/ext/bc/C/rpc`;
@@ -109,7 +93,7 @@ const LocalnetConfig = {
 // Default network connection
 const DefaultConfig = LocalnetConfig;
 
-/*! *****************************************************************************
+/******************************************************************************
 Copyright (c) Microsoft Corporation.
 
 Permission to use, copy, modify, and/or distribute this software for any
@@ -259,13 +243,13 @@ function canUseCredentials(config) {
 
 var network_helper = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    wsUrlFromConfigX: wsUrlFromConfigX,
-    wsUrlFromConfigEVM: wsUrlFromConfigEVM,
-    getNetworkIdFromURL: getNetworkIdFromURL,
+    canUseCredentials: canUseCredentials,
     createAvalancheProvider: createAvalancheProvider,
     createExplorerApi: createExplorerApi,
     createSignavaultApi: createSignavaultApi,
-    canUseCredentials: canUseCredentials
+    getNetworkIdFromURL: getNetworkIdFromURL,
+    wsUrlFromConfigEVM: wsUrlFromConfigEVM,
+    wsUrlFromConfigX: wsUrlFromConfigX
 });
 
 const NETWORK_TIMEOUT = 'NETWORK_REQUEST_TIMEOUT';
@@ -333,484 +317,6 @@ function getEthersJsonRpcProvider(config) {
     });
 }
 
-var events = {exports: {}};
-
-var R = typeof Reflect === 'object' ? Reflect : null;
-var ReflectApply = R && typeof R.apply === 'function'
-  ? R.apply
-  : function ReflectApply(target, receiver, args) {
-    return Function.prototype.apply.call(target, receiver, args);
-  };
-
-var ReflectOwnKeys;
-if (R && typeof R.ownKeys === 'function') {
-  ReflectOwnKeys = R.ownKeys;
-} else if (Object.getOwnPropertySymbols) {
-  ReflectOwnKeys = function ReflectOwnKeys(target) {
-    return Object.getOwnPropertyNames(target)
-      .concat(Object.getOwnPropertySymbols(target));
-  };
-} else {
-  ReflectOwnKeys = function ReflectOwnKeys(target) {
-    return Object.getOwnPropertyNames(target);
-  };
-}
-
-function ProcessEmitWarning(warning) {
-  if (console && console.warn) console.warn(warning);
-}
-
-var NumberIsNaN = Number.isNaN || function NumberIsNaN(value) {
-  return value !== value;
-};
-
-function EventEmitter() {
-  EventEmitter.init.call(this);
-}
-events.exports = EventEmitter;
-events.exports.once = once;
-
-// Backwards-compat with node 0.10.x
-EventEmitter.EventEmitter = EventEmitter;
-
-EventEmitter.prototype._events = undefined;
-EventEmitter.prototype._eventsCount = 0;
-EventEmitter.prototype._maxListeners = undefined;
-
-// By default EventEmitters will print a warning if more than 10 listeners are
-// added to it. This is a useful default which helps finding memory leaks.
-var defaultMaxListeners = 10;
-
-function checkListener(listener) {
-  if (typeof listener !== 'function') {
-    throw new TypeError('The "listener" argument must be of type Function. Received type ' + typeof listener);
-  }
-}
-
-Object.defineProperty(EventEmitter, 'defaultMaxListeners', {
-  enumerable: true,
-  get: function() {
-    return defaultMaxListeners;
-  },
-  set: function(arg) {
-    if (typeof arg !== 'number' || arg < 0 || NumberIsNaN(arg)) {
-      throw new RangeError('The value of "defaultMaxListeners" is out of range. It must be a non-negative number. Received ' + arg + '.');
-    }
-    defaultMaxListeners = arg;
-  }
-});
-
-EventEmitter.init = function() {
-
-  if (this._events === undefined ||
-      this._events === Object.getPrototypeOf(this)._events) {
-    this._events = Object.create(null);
-    this._eventsCount = 0;
-  }
-
-  this._maxListeners = this._maxListeners || undefined;
-};
-
-// Obviously not all Emitters should be limited to 10. This function allows
-// that to be increased. Set to zero for unlimited.
-EventEmitter.prototype.setMaxListeners = function setMaxListeners(n) {
-  if (typeof n !== 'number' || n < 0 || NumberIsNaN(n)) {
-    throw new RangeError('The value of "n" is out of range. It must be a non-negative number. Received ' + n + '.');
-  }
-  this._maxListeners = n;
-  return this;
-};
-
-function _getMaxListeners(that) {
-  if (that._maxListeners === undefined)
-    return EventEmitter.defaultMaxListeners;
-  return that._maxListeners;
-}
-
-EventEmitter.prototype.getMaxListeners = function getMaxListeners() {
-  return _getMaxListeners(this);
-};
-
-EventEmitter.prototype.emit = function emit(type) {
-  var args = [];
-  for (var i = 1; i < arguments.length; i++) args.push(arguments[i]);
-  var doError = (type === 'error');
-
-  var events = this._events;
-  if (events !== undefined)
-    doError = (doError && events.error === undefined);
-  else if (!doError)
-    return false;
-
-  // If there is no 'error' event listener then throw.
-  if (doError) {
-    var er;
-    if (args.length > 0)
-      er = args[0];
-    if (er instanceof Error) {
-      // Note: The comments on the `throw` lines are intentional, they show
-      // up in Node's output if this results in an unhandled exception.
-      throw er; // Unhandled 'error' event
-    }
-    // At least give some kind of context to the user
-    var err = new Error('Unhandled error.' + (er ? ' (' + er.message + ')' : ''));
-    err.context = er;
-    throw err; // Unhandled 'error' event
-  }
-
-  var handler = events[type];
-
-  if (handler === undefined)
-    return false;
-
-  if (typeof handler === 'function') {
-    ReflectApply(handler, this, args);
-  } else {
-    var len = handler.length;
-    var listeners = arrayClone(handler, len);
-    for (var i = 0; i < len; ++i)
-      ReflectApply(listeners[i], this, args);
-  }
-
-  return true;
-};
-
-function _addListener(target, type, listener, prepend) {
-  var m;
-  var events;
-  var existing;
-
-  checkListener(listener);
-
-  events = target._events;
-  if (events === undefined) {
-    events = target._events = Object.create(null);
-    target._eventsCount = 0;
-  } else {
-    // To avoid recursion in the case that type === "newListener"! Before
-    // adding it to the listeners, first emit "newListener".
-    if (events.newListener !== undefined) {
-      target.emit('newListener', type,
-                  listener.listener ? listener.listener : listener);
-
-      // Re-assign `events` because a newListener handler could have caused the
-      // this._events to be assigned to a new object
-      events = target._events;
-    }
-    existing = events[type];
-  }
-
-  if (existing === undefined) {
-    // Optimize the case of one listener. Don't need the extra array object.
-    existing = events[type] = listener;
-    ++target._eventsCount;
-  } else {
-    if (typeof existing === 'function') {
-      // Adding the second element, need to change to array.
-      existing = events[type] =
-        prepend ? [listener, existing] : [existing, listener];
-      // If we've already got an array, just append.
-    } else if (prepend) {
-      existing.unshift(listener);
-    } else {
-      existing.push(listener);
-    }
-
-    // Check for listener leak
-    m = _getMaxListeners(target);
-    if (m > 0 && existing.length > m && !existing.warned) {
-      existing.warned = true;
-      // No error code for this since it is a Warning
-      // eslint-disable-next-line no-restricted-syntax
-      var w = new Error('Possible EventEmitter memory leak detected. ' +
-                          existing.length + ' ' + String(type) + ' listeners ' +
-                          'added. Use emitter.setMaxListeners() to ' +
-                          'increase limit');
-      w.name = 'MaxListenersExceededWarning';
-      w.emitter = target;
-      w.type = type;
-      w.count = existing.length;
-      ProcessEmitWarning(w);
-    }
-  }
-
-  return target;
-}
-
-EventEmitter.prototype.addListener = function addListener(type, listener) {
-  return _addListener(this, type, listener, false);
-};
-
-EventEmitter.prototype.on = EventEmitter.prototype.addListener;
-
-EventEmitter.prototype.prependListener =
-    function prependListener(type, listener) {
-      return _addListener(this, type, listener, true);
-    };
-
-function onceWrapper() {
-  if (!this.fired) {
-    this.target.removeListener(this.type, this.wrapFn);
-    this.fired = true;
-    if (arguments.length === 0)
-      return this.listener.call(this.target);
-    return this.listener.apply(this.target, arguments);
-  }
-}
-
-function _onceWrap(target, type, listener) {
-  var state = { fired: false, wrapFn: undefined, target: target, type: type, listener: listener };
-  var wrapped = onceWrapper.bind(state);
-  wrapped.listener = listener;
-  state.wrapFn = wrapped;
-  return wrapped;
-}
-
-EventEmitter.prototype.once = function once(type, listener) {
-  checkListener(listener);
-  this.on(type, _onceWrap(this, type, listener));
-  return this;
-};
-
-EventEmitter.prototype.prependOnceListener =
-    function prependOnceListener(type, listener) {
-      checkListener(listener);
-      this.prependListener(type, _onceWrap(this, type, listener));
-      return this;
-    };
-
-// Emits a 'removeListener' event if and only if the listener was removed.
-EventEmitter.prototype.removeListener =
-    function removeListener(type, listener) {
-      var list, events, position, i, originalListener;
-
-      checkListener(listener);
-
-      events = this._events;
-      if (events === undefined)
-        return this;
-
-      list = events[type];
-      if (list === undefined)
-        return this;
-
-      if (list === listener || list.listener === listener) {
-        if (--this._eventsCount === 0)
-          this._events = Object.create(null);
-        else {
-          delete events[type];
-          if (events.removeListener)
-            this.emit('removeListener', type, list.listener || listener);
-        }
-      } else if (typeof list !== 'function') {
-        position = -1;
-
-        for (i = list.length - 1; i >= 0; i--) {
-          if (list[i] === listener || list[i].listener === listener) {
-            originalListener = list[i].listener;
-            position = i;
-            break;
-          }
-        }
-
-        if (position < 0)
-          return this;
-
-        if (position === 0)
-          list.shift();
-        else {
-          spliceOne(list, position);
-        }
-
-        if (list.length === 1)
-          events[type] = list[0];
-
-        if (events.removeListener !== undefined)
-          this.emit('removeListener', type, originalListener || listener);
-      }
-
-      return this;
-    };
-
-EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
-
-EventEmitter.prototype.removeAllListeners =
-    function removeAllListeners(type) {
-      var listeners, events, i;
-
-      events = this._events;
-      if (events === undefined)
-        return this;
-
-      // not listening for removeListener, no need to emit
-      if (events.removeListener === undefined) {
-        if (arguments.length === 0) {
-          this._events = Object.create(null);
-          this._eventsCount = 0;
-        } else if (events[type] !== undefined) {
-          if (--this._eventsCount === 0)
-            this._events = Object.create(null);
-          else
-            delete events[type];
-        }
-        return this;
-      }
-
-      // emit removeListener for all listeners on all events
-      if (arguments.length === 0) {
-        var keys = Object.keys(events);
-        var key;
-        for (i = 0; i < keys.length; ++i) {
-          key = keys[i];
-          if (key === 'removeListener') continue;
-          this.removeAllListeners(key);
-        }
-        this.removeAllListeners('removeListener');
-        this._events = Object.create(null);
-        this._eventsCount = 0;
-        return this;
-      }
-
-      listeners = events[type];
-
-      if (typeof listeners === 'function') {
-        this.removeListener(type, listeners);
-      } else if (listeners !== undefined) {
-        // LIFO order
-        for (i = listeners.length - 1; i >= 0; i--) {
-          this.removeListener(type, listeners[i]);
-        }
-      }
-
-      return this;
-    };
-
-function _listeners(target, type, unwrap) {
-  var events = target._events;
-
-  if (events === undefined)
-    return [];
-
-  var evlistener = events[type];
-  if (evlistener === undefined)
-    return [];
-
-  if (typeof evlistener === 'function')
-    return unwrap ? [evlistener.listener || evlistener] : [evlistener];
-
-  return unwrap ?
-    unwrapListeners(evlistener) : arrayClone(evlistener, evlistener.length);
-}
-
-EventEmitter.prototype.listeners = function listeners(type) {
-  return _listeners(this, type, true);
-};
-
-EventEmitter.prototype.rawListeners = function rawListeners(type) {
-  return _listeners(this, type, false);
-};
-
-EventEmitter.listenerCount = function(emitter, type) {
-  if (typeof emitter.listenerCount === 'function') {
-    return emitter.listenerCount(type);
-  } else {
-    return listenerCount.call(emitter, type);
-  }
-};
-
-EventEmitter.prototype.listenerCount = listenerCount;
-function listenerCount(type) {
-  var events = this._events;
-
-  if (events !== undefined) {
-    var evlistener = events[type];
-
-    if (typeof evlistener === 'function') {
-      return 1;
-    } else if (evlistener !== undefined) {
-      return evlistener.length;
-    }
-  }
-
-  return 0;
-}
-
-EventEmitter.prototype.eventNames = function eventNames() {
-  return this._eventsCount > 0 ? ReflectOwnKeys(this._events) : [];
-};
-
-function arrayClone(arr, n) {
-  var copy = new Array(n);
-  for (var i = 0; i < n; ++i)
-    copy[i] = arr[i];
-  return copy;
-}
-
-function spliceOne(list, index) {
-  for (; index + 1 < list.length; index++)
-    list[index] = list[index + 1];
-  list.pop();
-}
-
-function unwrapListeners(arr) {
-  var ret = new Array(arr.length);
-  for (var i = 0; i < ret.length; ++i) {
-    ret[i] = arr[i].listener || arr[i];
-  }
-  return ret;
-}
-
-function once(emitter, name) {
-  return new Promise(function (resolve, reject) {
-    function errorListener(err) {
-      emitter.removeListener(name, resolver);
-      reject(err);
-    }
-
-    function resolver() {
-      if (typeof emitter.removeListener === 'function') {
-        emitter.removeListener('error', errorListener);
-      }
-      resolve([].slice.call(arguments));
-    }
-    eventTargetAgnosticAddListener(emitter, name, resolver, { once: true });
-    if (name !== 'error') {
-      addErrorHandlerIfEventEmitter(emitter, errorListener, { once: true });
-    }
-  });
-}
-
-function addErrorHandlerIfEventEmitter(emitter, handler, flags) {
-  if (typeof emitter.on === 'function') {
-    eventTargetAgnosticAddListener(emitter, 'error', handler, flags);
-  }
-}
-
-function eventTargetAgnosticAddListener(emitter, name, listener, flags) {
-  if (typeof emitter.on === 'function') {
-    if (flags.once) {
-      emitter.once(name, listener);
-    } else {
-      emitter.on(name, listener);
-    }
-  } else if (typeof emitter.addEventListener === 'function') {
-    // EventTarget does not have `error` event semantics like Node
-    // EventEmitters, we do not listen for `error` events here.
-    emitter.addEventListener(name, function wrapListener(arg) {
-      // IE does not have builtin `{ once: true }` support so we
-      // have to do it manually.
-      if (flags.once) {
-        emitter.removeEventListener(name, wrapListener);
-      }
-      listener(arg);
-    });
-  } else {
-    throw new TypeError('The "emitter" argument must be of type EventEmitter. Received type ' + typeof emitter);
-  }
-}
-
-var EventEmitter$1 = events.exports;
-
 /**
  * Fire network change event
  * @param newNetwork The newly connected network config
@@ -819,7 +325,7 @@ function emitNetworkChange(newNetwork) {
     networkEvents.emit('network_change', newNetwork);
 }
 const MAX_LISTENERS = 100;
-const networkEvents = new EventEmitter$1();
+const networkEvents = new EventEmitter();
 networkEvents.setMaxListeners(MAX_LISTENERS);
 
 var _format$1 = "hh-sol-artifact-1";
@@ -1133,483 +639,6 @@ var ERC20Abi = {
 	linkReferences: linkReferences$1,
 	deployedLinkReferences: deployedLinkReferences$1
 };
-
-const NO_NETWORK = new Error('No network selected.');
-const NO_EXPLORER_API = new Error('Explorer API not found.');
-
-class Erc20Token {
-    constructor(data) {
-        this.name = xss__default['default'](data.name);
-        this.symbol = xss__default['default'](data.symbol);
-        this.address = data.address;
-        this.decimals = data.decimals;
-        this.chainId = data.chainId;
-        this.data = data;
-        //@ts-ignore
-        this.contract = new web3.eth.Contract(ERC20Abi.abi, data.address);
-    }
-    toData() {
-        return this.data;
-    }
-    static getData(address) {
-        return __awaiter(this, void 0, void 0, function* () {
-            //@ts-ignore
-            let contract = new web3.eth.Contract(ERC20Abi.abi, address);
-            let contractCalls = yield Promise.all([
-                contract.methods.name().call(),
-                contract.methods.symbol().call(),
-                contract.methods.decimals().call(),
-            ]);
-            // Purify the values for XSS protection
-            let name = xss__default['default'](contractCalls[0]);
-            let symbol = xss__default['default'](contractCalls[1]);
-            let decimals = parseInt(contractCalls[2]);
-            if (!exports.activeNetwork) {
-                throw NO_NETWORK;
-            }
-            return {
-                name,
-                symbol,
-                decimals,
-                address,
-                chainId: exports.activeNetwork.evmChainID,
-            };
-        });
-    }
-    balanceOf(address) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let bal = yield this.contract.methods.balanceOf(address).call();
-            return new dist.BN(bal);
-        });
-    }
-}
-
-exports.erc20Cache = {};
-function getErc20Cache() {
-    return Object.assign({}, exports.erc20Cache);
-}
-/**
- * Clears the internal erc20 cache.
- */
-function bustErc20Cache() {
-    exports.erc20Cache = {};
-}
-/**
- * Fetches ERC20 data from the given contract address and adds the token to the given store.
- * @param address ERC20 Contract address
- */
-function addErc20Token(address) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let existing = exports.erc20Cache[address];
-        if (existing) {
-            return existing;
-        }
-        try {
-            let data = yield Erc20Token.getData(address);
-            let token = new Erc20Token(data);
-            exports.erc20Cache[address] = token;
-            return token;
-        }
-        catch (e) {
-            throw new Error('Unable to add ERC20 contract.');
-        }
-    });
-}
-/**
- * Initates and caches an erc20 token from the given data.
- * @param data Information such as name, symbol, and address about the ERC20 token.
- */
-function addErc20TokenFromData(data) {
-    let address = data.address;
-    let existing = exports.erc20Cache[address];
-    if (existing) {
-        return existing;
-    }
-    let token = new Erc20Token(data);
-    exports.erc20Cache[address] = token;
-    return token;
-}
-function getContractDataErc20(address) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            let data = yield Erc20Token.getData(address);
-            return data;
-        }
-        catch (e) {
-            throw new Error(`ERC20 contract ${address} does not exist.`);
-        }
-    });
-}
-function getErc20Token(address) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let storeItem = exports.erc20Cache[address];
-        if (storeItem) {
-            return storeItem;
-        }
-        else {
-            return yield addErc20Token(address);
-        }
-    });
-}
-
-let avaInst = createAvalancheProvider(DefaultConfig);
-const avalanche = () => avaInst;
-function getProviderFromUrl(url, credentials = false) {
-    return new FetchHttpProvider(url, {
-        timeout: 20000,
-        withCredentials: credentials,
-    });
-}
-const rpcUrl = getRpcC(DefaultConfig);
-const web3 = new Web3__default['default'](getProviderFromUrl(rpcUrl, true));
-// JSON RPC Ethers provider
-exports.ethersProvider = getEthersJsonRpcProvider(DefaultConfig);
-let explorer_api = null;
-exports.activeNetwork = DefaultConfig;
-/**
- * Returns the evm chain ID of the active network
- */
-function getEvmChainID() {
-    return exports.activeNetwork.evmChainID;
-}
-/**
- * Changes the connected network of the SDK.
- * This is a synchronous call that does not do any network requests.
- * @param conf
- * @param credentials
- */
-function setAvalanche(ava) {
-    var _a;
-    avaInst = ava;
-    let conf = {
-        rawUrl: ava.getURL(),
-        apiProtocol: ava.getProtocol().toLowerCase(),
-        apiIp: ava.getHost(),
-        apiPort: ava.getPort(),
-        networkID: ava.getNetworkID(),
-        xChainID: ava.getNetwork().X.blockchainID,
-        pChainID: ava.getNetwork().P.blockchainID,
-        cChainID: ava.getNetwork().C.blockchainID,
-        avaxID: ava.getNetwork().X.avaxAssetID,
-        evmChainID: (_a = ava.getNetwork().C.chainID) !== null && _a !== void 0 ? _a : 0,
-        get rpcUrl() {
-            return {
-                c: getRpcC(this),
-                p: getRpcP(this),
-                x: getRpcX(this),
-            };
-        },
-    };
-    const useCredentials = ava.getRequestConfig().withCredentials === true;
-    let rpcUrl = getRpcC(conf);
-    web3.setProvider(getProviderFromUrl(rpcUrl, useCredentials));
-    // Update ethers provider
-    exports.ethersProvider = getEthersJsonRpcProvider(conf);
-    exports.activeNetwork = conf;
-    emitNetworkChange(conf);
-    bustErc20Cache();
-}
-
-/**
- * Given the chain ID returns the chain alias
- * @param id Chain id
- */
-function idToChainAlias(id) {
-    if (id === exports.activeNetwork.xChainID) {
-        return 'X';
-    }
-    else if (id === exports.activeNetwork.pChainID) {
-        return 'P';
-    }
-    else if (id === exports.activeNetwork.cChainID) {
-        return 'C';
-    }
-    throw new Error('Unknown chain ID.');
-}
-
-/**
- * Given a chain alias, returns the chain id.
- * @param alias `X`, `P` or `C`
- */
-function chainIdFromAlias(alias) {
-    if (alias === 'X') {
-        return avalanche().XChain().getBlockchainID();
-    }
-    else if (alias === 'P') {
-        return avalanche().PChain().getBlockchainID();
-    }
-    else if (alias === 'C') {
-        return avalanche().CChain().getBlockchainID();
-    }
-    throw new Error('Unknown chain alias.');
-}
-
-const FILTER_ADDRESS_SIZE = 1000;
-class AVMWebSocketProvider {
-    constructor(wsUrl) {
-        this.isConnected = false;
-        this.wallets = [];
-        this.boundHandler = () => this.onWalletAddressChange();
-        this.socket = new Sockette__default['default'](wsUrl, {
-            onopen: () => {
-                this.onOpen();
-            },
-            onclose: () => {
-                this.onClose();
-            },
-            onmessage: () => {
-                this.onMessage();
-            },
-            onerror: () => {
-                this.onError();
-            },
-        });
-    }
-    /**
-     * Starts watching for transactions on this wallet.
-     * @param wallet The wallet instance to track
-     */
-    trackWallet(wallet) {
-        if (this.wallets.includes(wallet)) {
-            return;
-        }
-        this.wallets.push(wallet);
-        wallet.on('addressChanged', this.boundHandler);
-        this.updateFilterAddresses();
-    }
-    onWalletAddressChange() {
-        this.updateFilterAddresses();
-    }
-    removeWallet(w) {
-        if (!this.wallets.includes(w)) {
-            return;
-        }
-        let index = this.wallets.indexOf(w);
-        this.wallets.splice(index, 1);
-        w.off('addressChanged', this.boundHandler);
-    }
-    setEndpoint(wsUrl) {
-        this.socket.close();
-        this.socket = new Sockette__default['default'](wsUrl, {
-            onopen: () => {
-                this.onOpen();
-            },
-            onclose: () => {
-                this.onClose();
-            },
-            onmessage: () => {
-                this.onMessage();
-            },
-            onerror: () => {
-                this.onError();
-            },
-        });
-    }
-    // Clears the filter listening to X chain transactions
-    clearFilter() {
-        let pubsub = new dist.PubSub();
-        let bloom = pubsub.newBloom(FILTER_ADDRESS_SIZE);
-        this.socket.send(bloom);
-    }
-    /**
-     * Creates a bloom filter from the addresses of the tracked wallets and subscribes to
-     * transactions on the node.
-     */
-    updateFilterAddresses() {
-        if (!this.isConnected) {
-            return;
-        }
-        let wallets = this.wallets;
-        let addrs = [];
-        for (let i = 0; i < wallets.length; i++) {
-            let w = wallets[i];
-            let externalAddrs = w.getExternalAddressesXSync();
-            let addrsLen = externalAddrs.length;
-            let startIndex = Math.max(0, addrsLen - FILTER_ADDRESS_SIZE);
-            let addAddrs = externalAddrs.slice(startIndex);
-            addrs.push(...addAddrs);
-        }
-        let pubsub = new dist.PubSub();
-        let bloom = pubsub.newBloom(FILTER_ADDRESS_SIZE);
-        this.socket.send(bloom);
-        // Divide addresses by 100 and send multiple messages
-        // There is a max msg size ~10kb
-        const GROUP_AMOUNT = 100;
-        let index = 0;
-        while (index < addrs.length) {
-            let chunk = addrs.slice(index, index + GROUP_AMOUNT);
-            let addAddrs = pubsub.addAddresses(chunk);
-            this.socket.send(addAddrs);
-            index += GROUP_AMOUNT;
-        }
-    }
-    updateWalletBalanceX() {
-        this.wallets.forEach((w) => {
-            w.updateUtxosX();
-        });
-    }
-    onOpen() {
-        this.isConnected = true;
-        this.updateFilterAddresses();
-    }
-    onMessage() {
-        this.updateWalletBalanceX();
-    }
-    onClose() {
-        this.isConnected = false;
-    }
-    onError() { }
-}
-
-const SOCKET_RECONNECT_TIMEOUT = 1000;
-class EVMWebSocketProvider {
-    constructor(wsUrl) {
-        this.wallets = [];
-        let provider = new ethers.ethers.providers.WebSocketProvider(wsUrl);
-        this.provider = provider;
-        this.wsUrl = wsUrl;
-        this.addListeners();
-    }
-    setEndpoint(wsUrl) {
-        this.destroyConnection();
-        let provider = new ethers.ethers.providers.WebSocketProvider(wsUrl);
-        this.provider = provider;
-        this.wsUrl = wsUrl;
-        this.addListeners();
-    }
-    trackWallet(wallet) {
-        if (this.wallets.includes(wallet)) {
-            return;
-        }
-        this.wallets.push(wallet);
-    }
-    removeWallet(wallet) {
-        if (!this.wallets.includes(wallet)) {
-            return;
-        }
-        let index = this.wallets.indexOf(wallet);
-        this.wallets.splice(index, 1);
-    }
-    destroyConnection() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.provider._websocket.onclose = () => { };
-            yield this.provider.destroy();
-        });
-    }
-    reconnect() {
-        return __awaiter(this, void 0, void 0, function* () {
-            // Clear the current onclose handler so that we dont attempt a reconnection
-            yield this.destroyConnection();
-            let wsProvider = new ethers.ethers.providers.WebSocketProvider(this.wsUrl);
-            this.provider = wsProvider;
-        });
-    }
-    addListeners() {
-        let provider = this.provider;
-        provider.on('block', () => {
-            this.onBlock();
-        });
-        // Save default function so we can keep calling it
-        let defaultOnOpen = provider._websocket.onopen;
-        let defaultOnClose = provider._websocket.onclose;
-        provider._websocket.onopen = (ev) => {
-            if (defaultOnOpen)
-                defaultOnOpen(ev);
-        };
-        provider._websocket.onclose = (ev) => {
-            if (defaultOnClose)
-                defaultOnClose(ev);
-            setTimeout(() => {
-                this.reconnect();
-            }, SOCKET_RECONNECT_TIMEOUT);
-        };
-    }
-    removeListeners() {
-        this.provider.off('block', this.onBlock);
-    }
-    onBlock() {
-        // Update wallet balances
-        this.wallets.forEach((w) => {
-            w.updateAvaxBalanceC();
-        });
-    }
-}
-
-class WebsocketProvider {
-    constructor(avmEndpoint, evmEndpoint) {
-        this.avmProvider = new AVMWebSocketProvider(avmEndpoint);
-        this.evmProvider = new EVMWebSocketProvider(evmEndpoint);
-    }
-    static fromActiveNetwork() {
-        return WebsocketProvider.fromNetworkConfig(exports.activeNetwork);
-    }
-    static fromNetworkConfig(config) {
-        let evm = wsUrlFromConfigEVM(config);
-        let avm = wsUrlFromConfigX(config);
-        return new WebsocketProvider(avm, evm);
-    }
-    setEndpoints(avmEndpoint, evmEndpoint) {
-        this.avmProvider.setEndpoint(avmEndpoint);
-        this.evmProvider.setEndpoint(evmEndpoint);
-    }
-    setNetwork(config) {
-        let evm = wsUrlFromConfigEVM(config);
-        let avm = wsUrlFromConfigX(config);
-        this.setEndpoints(avm, evm);
-    }
-    trackWallet(wallet) {
-        this.avmProvider.trackWallet(wallet);
-        this.evmProvider.trackWallet(wallet);
-    }
-    removeWallet(wallet) {
-        this.avmProvider.removeWallet(wallet);
-        this.evmProvider.removeWallet(wallet);
-    }
-}
-
-function isFujiNetwork(_) {
-    return false;
-}
-function isMainnetNetwork(_) {
-    return false;
-}
-function isLocalNetwork(activeNetwork) {
-    return activeNetwork.networkID === LocalnetConfig.networkID;
-}
-function getAvaxAssetID() {
-    return exports.activeNetwork.avaxID;
-}
-function getActiveNetworkConfig() {
-    return exports.activeNetwork;
-}
-
-let assetCache = {};
-function getAssetDescriptionSync(assetId) {
-    if (typeof assetCache[assetId] === 'undefined')
-        throw new Error(`Asset ID ${assetId} is not known.`);
-    return assetCache[assetId];
-}
-/**
- * Uses the node api to get meta data given an asset ID. Saves the result to cache.
- * @param assetId
- */
-function getAssetDescription(assetId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let cache = assetCache[assetId];
-        if (cache) {
-            return cache;
-        }
-        try {
-            let res = yield avalanche().XChain().getAssetDescription(assetId);
-            let clean = Object.assign(Object.assign({}, res), { assetID: assetId, name: xss__default['default'](res.name), symbol: xss__default['default'](res.symbol) });
-            assetCache[assetId] = clean;
-            return clean;
-        }
-        catch (e) {
-            throw new Error(`Asset ${assetId} does not exist.`);
-        }
-    });
-}
 
 var _format = "hh-sol-artifact-1";
 var contractName = "ERC721";
@@ -1986,6 +1015,53 @@ var ERC721Abi = {
 	deployedLinkReferences: deployedLinkReferences
 };
 
+const bintools = dist.BinTools.getInstance();
+
+/**
+ * Given a chain alias, returns the chain id.
+ * @param alias `X`, `P` or `C`
+ */
+function chainIdFromAlias(alias) {
+    if (alias === 'X') {
+        return avalanche().XChain().getBlockchainID();
+    }
+    else if (alias === 'P') {
+        return avalanche().PChain().getBlockchainID();
+    }
+    else if (alias === 'C') {
+        return avalanche().CChain().getBlockchainID();
+    }
+    throw new Error('Unknown chain alias.');
+}
+
+let assetCache = {};
+function getAssetDescriptionSync(assetId) {
+    if (typeof assetCache[assetId] === 'undefined')
+        throw new Error(`Asset ID ${assetId} is not known.`);
+    return assetCache[assetId];
+}
+/**
+ * Uses the node api to get meta data given an asset ID. Saves the result to cache.
+ * @param assetId
+ */
+function getAssetDescription(assetId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let cache = assetCache[assetId];
+        if (cache) {
+            return cache;
+        }
+        try {
+            let res = yield avalanche().XChain().getAssetDescription(assetId);
+            let clean = Object.assign(Object.assign({}, res), { assetID: assetId, name: xss(res.name), symbol: xss(res.symbol) });
+            assetCache[assetId] = clean;
+            return clean;
+        }
+        catch (e) {
+            throw new Error(`Asset ${assetId} does not exist.`);
+        }
+    });
+}
+
 // import { web3 } from '@/Network';
 // import { AbiItem } from 'web3-utils';
 /**
@@ -1993,7 +1069,7 @@ var ERC721Abi = {
  * @param address
  */
 function getErc721TokenEthers(address) {
-    return ethers.ContractFactory.getContract(address, abi);
+    return ethers.ContractFactory.getContract(address, ERC721Abi);
 }
 /**
  * Returns an web3 ERC721 Contract
@@ -2003,7 +1079,730 @@ function getErc721TokenEthers(address) {
 //     return new web3.eth.Contract(abi as AbiItem[], address);
 // }
 
-const bintools = dist.BinTools.getInstance();
+function buildCreateNftFamilyTx(name, symbol, groupNum, fromAddrs, minterAddr, changeAddr, utxoSet) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let fromAddresses = fromAddrs;
+        let changeAddress = changeAddr;
+        let minterAddress = minterAddr;
+        const minterSets = [];
+        // Create the groups
+        for (let i = 0; i < groupNum; i++) {
+            const minterSet = new avm.MinterSet(1, [minterAddress]);
+            minterSets.push(minterSet);
+        }
+        let unsignedTx = yield avalanche()
+            .XChain()
+            .buildCreateNFTAssetTx(utxoSet, fromAddresses, [changeAddress], minterSets, name, symbol);
+        return unsignedTx;
+    });
+}
+function buildMintNftTx(mintUtxo, payload, quantity, ownerAddress, changeAddress, fromAddresses, utxoSet) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let addrBuf = bintools.parseAddress(ownerAddress, 'X');
+        let owners = [];
+        let sourceAddresses = fromAddresses;
+        for (let i = 0; i < quantity; i++) {
+            let owner = new common.OutputOwners([addrBuf]);
+            owners.push(owner);
+        }
+        let groupID = mintUtxo.getOutput().getGroupID();
+        let mintTx = yield avalanche()
+            .XChain()
+            .buildCreateNFTMintTx(utxoSet, owners, sourceAddresses, [changeAddress], mintUtxo.getUTXOID(), groupID, payload);
+        return mintTx;
+    });
+}
+function buildAvmExportTransaction(destinationChain, utxoSet, fromAddresses, toAddress, amount, // export amount + fee
+sourceChangeAddress) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let destinationChainId = chainIdFromAlias(destinationChain);
+        return yield avalanche()
+            .XChain()
+            .buildExportTx(utxoSet, amount, destinationChainId, [toAddress], fromAddresses, [
+            sourceChangeAddress,
+        ]);
+    });
+}
+function buildPlatformExportTransaction(utxoSet, fromAddresses, toAddress, amount, // export amount + fee
+sourceChangeAddress, destinationChain) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let destinationChainId = chainIdFromAlias(destinationChain);
+        return yield avalanche()
+            .PChain()
+            .buildExportTx(utxoSet, amount, destinationChainId, [toAddress], fromAddresses, [sourceChangeAddress]);
+    });
+}
+/**
+ *
+ * @param fromAddresses
+ * @param toAddress
+ * @param amount
+ * @param fromAddressBech
+ * @param destinationChain Either `X` or `P`
+ * @param fee Export fee in nAVAX
+ */
+function buildEvmExportTransaction(fromAddresses, toAddress, amount, // export amount + fee
+fromAddressBech, destinationChain, fee) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let destinationChainId = chainIdFromAlias(destinationChain);
+        const nonce = yield web3.eth.getTransactionCount(fromAddresses[0]);
+        const avaxAssetIDBuf = yield avalanche().XChain().getAVAXAssetID();
+        const avaxAssetIDStr = bintools.cb58Encode(avaxAssetIDBuf);
+        let fromAddressHex = fromAddresses[0];
+        return yield avalanche()
+            .CChain()
+            .buildExportTx(amount, avaxAssetIDStr, destinationChainId, fromAddressHex, fromAddressBech, [toAddress], nonce, undefined, undefined, fee);
+    });
+}
+function buildEvmTransferEIP1559Tx(from, to, amount, // in wei
+priorityFee, maxFee, gasLimit) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const nonce = yield web3.eth.getTransactionCount(from);
+        const chainId = yield web3.eth.getChainId();
+        const networkId = yield web3.eth.net.getId();
+        const common = common$1.Common.custom({ networkId, chainId });
+        const tx$1 = tx.FeeMarketEIP1559Transaction.fromTxData({
+            nonce: nonce,
+            maxFeePerGas: '0x' + maxFee.toString('hex'),
+            maxPriorityFeePerGas: '0x' + priorityFee.toString('hex'),
+            gasLimit: gasLimit,
+            to: to,
+            value: '0x' + amount.toString('hex'),
+            data: '0x',
+        }, { common });
+        return tx$1;
+    });
+}
+function buildEvmTransferNativeTx(from, to, amount, // in wei
+gasPrice, gasLimit) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const nonce = yield web3.eth.getTransactionCount(from);
+        const chainId = yield web3.eth.getChainId();
+        const networkId = yield web3.eth.net.getId();
+        const common = common$1.Common.custom({ networkId, chainId });
+        const tx$1 = tx.Transaction.fromTxData({
+            nonce: nonce,
+            gasPrice: '0x' + gasPrice.toString('hex'),
+            gasLimit: gasLimit,
+            to: to,
+            value: '0x' + amount.toString('hex'),
+            data: '0x',
+        }, { common });
+        return tx$1;
+    });
+}
+function buildCustomEvmTx(from, gasPrice, gasLimit, data, to, value, nonce) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (typeof nonce === 'undefined') {
+            nonce = yield web3.eth.getTransactionCount(from);
+        }
+        const chainId = yield web3.eth.getChainId();
+        const networkId = yield web3.eth.net.getId();
+        const chainParams = {
+            common: common$1.Common.custom({
+                networkId,
+                chainId,
+            }, {
+                baseChain: common$1.Chain.Mainnet,
+                hardfork: common$1.Hardfork.Istanbul,
+            }),
+        };
+        let gasPriceHex = `0x${gasPrice.toString('hex')}`;
+        let tx$1 = tx.Transaction.fromTxData({
+            nonce,
+            gasPrice: gasPriceHex,
+            gasLimit,
+            value,
+            to,
+            data,
+        }, chainParams);
+        return tx$1;
+    });
+}
+function buildEvmTransferErc20Tx(from, to, amount, // in wei
+gasPrice, gasLimit, contractAddress) {
+    return __awaiter(this, void 0, void 0, function* () {
+        //@ts-ignore
+        const cont = new web3.eth.Contract(ERC20Abi.abi, contractAddress);
+        const tokenTx = cont.methods.transfer(to, amount.toString());
+        let data = tokenTx.encodeABI();
+        let tx = yield buildCustomEvmTx(from, gasPrice, gasLimit, data, contractAddress);
+        return tx;
+    });
+}
+function buildEvmTransferErc721Tx(from, to, gasPrice, gasLimit, tokenContract, tokenId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const nonce = yield web3.eth.getTransactionCount(from);
+        const chainId = yield web3.eth.getChainId();
+        const networkId = yield web3.eth.net.getId();
+        const chainParams = {
+            common: common$1.Common.custom({
+                networkId,
+                chainId,
+            }, {
+                baseChain: common$1.Chain.Mainnet,
+                hardfork: common$1.Hardfork.Istanbul,
+            }),
+        };
+        // @ts-ignore
+        const contract = new web3.eth.Contract(ERC721Abi.abi, tokenContract);
+        const tokenTx = contract.methods['safeTransferFrom(address,address,uint256)'](from, to, tokenId);
+        let tx$1 = tx.Transaction.fromTxData({
+            nonce: nonce,
+            gasPrice: '0x' + gasPrice.toString('hex'),
+            gasLimit: gasLimit,
+            value: '0x0',
+            to: tokenContract,
+            data: tokenTx.encodeABI(),
+        }, chainParams);
+        return tx$1;
+    });
+}
+function estimateErc20Gas(tokenContract, from, to, value) {
+    return __awaiter(this, void 0, void 0, function* () {
+        //@ts-ignore
+        const contract = new web3.eth.Contract(ERC20Abi.abi, tokenContract);
+        const tokenTx = contract.methods.transfer(to, value.toString());
+        return yield tokenTx.estimateGas({
+            from: from,
+        });
+    });
+}
+/**
+ * Estimate the gas limit for the ERC721 `safeTransferFrom(address,address,uint256)` method.
+ * @param contract
+ * @param from
+ * @param to
+ * @param tokenID
+ */
+function estimateErc721TransferGas(contract, from, to, tokenID) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let c = getErc721TokenEthers(contract);
+        c = c.connect(exports.ethersProvider);
+        const gas = yield c.estimateGas['safeTransferFrom(address,address,uint256)'](from, to, tokenID);
+        return gas.toNumber();
+    });
+}
+/**
+ * Estimates the gas needed to send AVAX
+ * @param to Destination address
+ * @param amount Amount of AVAX to send, given in WEI
+ * @param gasPrice Given in WEI
+ */
+function estimateAvaxGas(from, to, amount, gasPrice) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            return yield web3.eth.estimateGas({
+                from,
+                to,
+                gasPrice: `0x${gasPrice.toString('hex')}`,
+                value: `0x${amount.toString('hex')}`,
+            });
+        }
+        catch (e) {
+            // TODO: Throws an error if we do not have enough avax balance
+            //TODO: Is it ok to return 21000
+            return 21000;
+        }
+    });
+}
+var AvmTxNameEnum;
+(function (AvmTxNameEnum) {
+    AvmTxNameEnum[AvmTxNameEnum["Transaction"] = avm.AVMConstants.BASETX] = "Transaction";
+    AvmTxNameEnum[AvmTxNameEnum["Mint"] = avm.AVMConstants.CREATEASSETTX] = "Mint";
+    AvmTxNameEnum[AvmTxNameEnum["Operation"] = avm.AVMConstants.OPERATIONTX] = "Operation";
+    AvmTxNameEnum[AvmTxNameEnum["Import"] = avm.AVMConstants.IMPORTTX] = "Import";
+    AvmTxNameEnum[AvmTxNameEnum["Export"] = avm.AVMConstants.EXPORTTX] = "Export";
+})(AvmTxNameEnum || (AvmTxNameEnum = {}));
+var PlatfromTxNameEnum;
+(function (PlatfromTxNameEnum) {
+    PlatfromTxNameEnum[PlatfromTxNameEnum["Transaction"] = platformvm.PlatformVMConstants.BASETX] = "Transaction";
+    PlatfromTxNameEnum[PlatfromTxNameEnum["Add Validator"] = platformvm.PlatformVMConstants.ADDVALIDATORTX] = "Add Validator";
+    PlatfromTxNameEnum[PlatfromTxNameEnum["Add Delegator"] = platformvm.PlatformVMConstants.ADDDELEGATORTX] = "Add Delegator";
+    PlatfromTxNameEnum[PlatfromTxNameEnum["Import"] = platformvm.PlatformVMConstants.IMPORTTX] = "Import";
+    PlatfromTxNameEnum[PlatfromTxNameEnum["Export"] = platformvm.PlatformVMConstants.EXPORTTX] = "Export";
+    PlatfromTxNameEnum[PlatfromTxNameEnum["Add Subnet Validator"] = platformvm.PlatformVMConstants.ADDSUBNETVALIDATORTX] = "Add Subnet Validator";
+    PlatfromTxNameEnum[PlatfromTxNameEnum["Create Chain"] = platformvm.PlatformVMConstants.CREATECHAINTX] = "Create Chain";
+    PlatfromTxNameEnum[PlatfromTxNameEnum["Create Subnet"] = platformvm.PlatformVMConstants.CREATESUBNETTX] = "Create Subnet";
+    PlatfromTxNameEnum[PlatfromTxNameEnum["Advance Time"] = platformvm.PlatformVMConstants.ADVANCETIMETX] = "Advance Time";
+    PlatfromTxNameEnum[PlatfromTxNameEnum["Reward Validator"] = platformvm.PlatformVMConstants.REWARDVALIDATORTX] = "Reward Validator";
+})(PlatfromTxNameEnum || (PlatfromTxNameEnum = {}));
+// TODO: create asset transactions
+var ParseableAvmTxEnum;
+(function (ParseableAvmTxEnum) {
+    ParseableAvmTxEnum[ParseableAvmTxEnum["Transaction"] = avm.AVMConstants.BASETX] = "Transaction";
+    ParseableAvmTxEnum[ParseableAvmTxEnum["Import"] = avm.AVMConstants.IMPORTTX] = "Import";
+    ParseableAvmTxEnum[ParseableAvmTxEnum["Export"] = avm.AVMConstants.EXPORTTX] = "Export";
+})(ParseableAvmTxEnum || (ParseableAvmTxEnum = {}));
+var ParseablePlatformEnum;
+(function (ParseablePlatformEnum) {
+    ParseablePlatformEnum[ParseablePlatformEnum["Transaction"] = platformvm.PlatformVMConstants.BASETX] = "Transaction";
+    ParseablePlatformEnum[ParseablePlatformEnum["Add Validator"] = platformvm.PlatformVMConstants.ADDVALIDATORTX] = "Add Validator";
+    ParseablePlatformEnum[ParseablePlatformEnum["Add Delegator"] = platformvm.PlatformVMConstants.ADDDELEGATORTX] = "Add Delegator";
+    ParseablePlatformEnum[ParseablePlatformEnum["Import"] = platformvm.PlatformVMConstants.IMPORTTX] = "Import";
+    ParseablePlatformEnum[ParseablePlatformEnum["Export"] = platformvm.PlatformVMConstants.EXPORTTX] = "Export";
+})(ParseablePlatformEnum || (ParseablePlatformEnum = {}));
+var ParseableEvmTxEnum;
+(function (ParseableEvmTxEnum) {
+    ParseableEvmTxEnum[ParseableEvmTxEnum["Import"] = evm.EVMConstants.IMPORTTX] = "Import";
+    ParseableEvmTxEnum[ParseableEvmTxEnum["Export"] = evm.EVMConstants.EXPORTTX] = "Export";
+})(ParseableEvmTxEnum || (ParseableEvmTxEnum = {}));
+
+var tx_helper = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    get AvmTxNameEnum () { return AvmTxNameEnum; },
+    ERC20Abi: ERC20Abi,
+    ERC721Abi: ERC721Abi,
+    get ParseableAvmTxEnum () { return ParseableAvmTxEnum; },
+    get ParseableEvmTxEnum () { return ParseableEvmTxEnum; },
+    get ParseablePlatformEnum () { return ParseablePlatformEnum; },
+    get PlatfromTxNameEnum () { return PlatfromTxNameEnum; },
+    buildAvmExportTransaction: buildAvmExportTransaction,
+    buildCreateNftFamilyTx: buildCreateNftFamilyTx,
+    buildCustomEvmTx: buildCustomEvmTx,
+    buildEvmExportTransaction: buildEvmExportTransaction,
+    buildEvmTransferEIP1559Tx: buildEvmTransferEIP1559Tx,
+    buildEvmTransferErc20Tx: buildEvmTransferErc20Tx,
+    buildEvmTransferErc721Tx: buildEvmTransferErc721Tx,
+    buildEvmTransferNativeTx: buildEvmTransferNativeTx,
+    buildMintNftTx: buildMintNftTx,
+    buildPlatformExportTransaction: buildPlatformExportTransaction,
+    estimateAvaxGas: estimateAvaxGas,
+    estimateErc20Gas: estimateErc20Gas,
+    estimateErc721TransferGas: estimateErc721TransferGas
+});
+
+const NO_NETWORK = new Error('No network selected.');
+const NO_EXPLORER_API = new Error('Explorer API not found.');
+
+class Erc20Token {
+    constructor(data) {
+        this.name = xss(data.name);
+        this.symbol = xss(data.symbol);
+        this.address = data.address;
+        this.decimals = data.decimals;
+        this.chainId = data.chainId;
+        this.data = data;
+        //@ts-ignore
+        this.contract = new web3.eth.Contract(ERC20Abi.abi, data.address);
+    }
+    toData() {
+        return this.data;
+    }
+    static getData(address) {
+        return __awaiter(this, void 0, void 0, function* () {
+            //@ts-ignore
+            let contract = new web3.eth.Contract(ERC20Abi.abi, address);
+            let contractCalls = yield Promise.all([
+                contract.methods.name().call(),
+                contract.methods.symbol().call(),
+                contract.methods.decimals().call(),
+            ]);
+            // Purify the values for XSS protection
+            let name = xss(contractCalls[0]);
+            let symbol = xss(contractCalls[1]);
+            let decimals = parseInt(contractCalls[2]);
+            if (!exports.activeNetwork) {
+                throw NO_NETWORK;
+            }
+            return {
+                name,
+                symbol,
+                decimals,
+                address,
+                chainId: exports.activeNetwork.evmChainID,
+            };
+        });
+    }
+    balanceOf(address) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let bal = yield this.contract.methods.balanceOf(address).call();
+            return new dist.BN(bal);
+        });
+    }
+}
+
+exports.erc20Cache = {};
+function getErc20Cache() {
+    return Object.assign({}, exports.erc20Cache);
+}
+/**
+ * Clears the internal erc20 cache.
+ */
+function bustErc20Cache() {
+    exports.erc20Cache = {};
+}
+/**
+ * Fetches ERC20 data from the given contract address and adds the token to the given store.
+ * @param address ERC20 Contract address
+ */
+function addErc20Token(address) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let existing = exports.erc20Cache[address];
+        if (existing) {
+            return existing;
+        }
+        try {
+            let data = yield Erc20Token.getData(address);
+            let token = new Erc20Token(data);
+            exports.erc20Cache[address] = token;
+            return token;
+        }
+        catch (e) {
+            throw new Error('Unable to add ERC20 contract.');
+        }
+    });
+}
+/**
+ * Initates and caches an erc20 token from the given data.
+ * @param data Information such as name, symbol, and address about the ERC20 token.
+ */
+function addErc20TokenFromData(data) {
+    let address = data.address;
+    let existing = exports.erc20Cache[address];
+    if (existing) {
+        return existing;
+    }
+    let token = new Erc20Token(data);
+    exports.erc20Cache[address] = token;
+    return token;
+}
+function getContractDataErc20(address) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let data = yield Erc20Token.getData(address);
+            return data;
+        }
+        catch (e) {
+            throw new Error(`ERC20 contract ${address} does not exist.`);
+        }
+    });
+}
+function getErc20Token(address) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let storeItem = exports.erc20Cache[address];
+        if (storeItem) {
+            return storeItem;
+        }
+        else {
+            return yield addErc20Token(address);
+        }
+    });
+}
+
+let avaInst = createAvalancheProvider(DefaultConfig);
+const avalanche = () => avaInst;
+function getProviderFromUrl(url, credentials = false) {
+    return new FetchHttpProvider(url, {
+        timeout: 20000,
+        withCredentials: credentials,
+    });
+}
+const rpcUrl = getRpcC(DefaultConfig);
+const web3 = new Web3(getProviderFromUrl(rpcUrl, true));
+// JSON RPC Ethers provider
+exports.ethersProvider = getEthersJsonRpcProvider(DefaultConfig);
+let explorer_api = null;
+exports.activeNetwork = DefaultConfig;
+/**
+ * Returns the evm chain ID of the active network
+ */
+function getEvmChainID() {
+    return exports.activeNetwork.evmChainID;
+}
+/**
+ * Changes the connected network of the SDK.
+ * This is a synchronous call that does not do any network requests.
+ * @param conf
+ * @param credentials
+ */
+function setAvalanche(ava) {
+    var _a;
+    avaInst = ava;
+    let conf = {
+        rawUrl: ava.getURL(),
+        apiProtocol: ava.getProtocol().toLowerCase(),
+        apiIp: ava.getHost(),
+        apiPort: ava.getPort(),
+        networkID: ava.getNetworkID(),
+        xChainID: ava.getNetwork().X.blockchainID,
+        pChainID: ava.getNetwork().P.blockchainID,
+        cChainID: ava.getNetwork().C.blockchainID,
+        avaxID: ava.getNetwork().X.avaxAssetID,
+        evmChainID: (_a = ava.getNetwork().C.chainID) !== null && _a !== void 0 ? _a : 0,
+        get rpcUrl() {
+            return {
+                c: getRpcC(this),
+                p: getRpcP(this),
+                x: getRpcX(this),
+            };
+        },
+    };
+    const useCredentials = ava.getRequestConfig().withCredentials === true;
+    let rpcUrl = getRpcC(conf);
+    web3.setProvider(getProviderFromUrl(rpcUrl, useCredentials));
+    // Update ethers provider
+    exports.ethersProvider = getEthersJsonRpcProvider(conf);
+    exports.activeNetwork = conf;
+    emitNetworkChange(conf);
+    bustErc20Cache();
+}
+
+/**
+ * Given the chain ID returns the chain alias
+ * @param id Chain id
+ */
+function idToChainAlias(id) {
+    if (id === exports.activeNetwork.xChainID) {
+        return 'X';
+    }
+    else if (id === exports.activeNetwork.pChainID) {
+        return 'P';
+    }
+    else if (id === exports.activeNetwork.cChainID) {
+        return 'C';
+    }
+    throw new Error('Unknown chain ID.');
+}
+
+const FILTER_ADDRESS_SIZE = 1000;
+class AVMWebSocketProvider {
+    constructor(wsUrl) {
+        this.isConnected = false;
+        this.wallets = [];
+        this.boundHandler = () => this.onWalletAddressChange();
+        this.socket = new Sockette(wsUrl, {
+            onopen: () => {
+                this.onOpen();
+            },
+            onclose: () => {
+                this.onClose();
+            },
+            onmessage: () => {
+                this.onMessage();
+            },
+            onerror: () => {
+                this.onError();
+            },
+        });
+    }
+    /**
+     * Starts watching for transactions on this wallet.
+     * @param wallet The wallet instance to track
+     */
+    trackWallet(wallet) {
+        if (this.wallets.includes(wallet)) {
+            return;
+        }
+        this.wallets.push(wallet);
+        wallet.on('addressChanged', this.boundHandler);
+        this.updateFilterAddresses();
+    }
+    onWalletAddressChange() {
+        this.updateFilterAddresses();
+    }
+    removeWallet(w) {
+        if (!this.wallets.includes(w)) {
+            return;
+        }
+        let index = this.wallets.indexOf(w);
+        this.wallets.splice(index, 1);
+        w.off('addressChanged', this.boundHandler);
+    }
+    setEndpoint(wsUrl) {
+        this.socket.close();
+        this.socket = new Sockette(wsUrl, {
+            onopen: () => {
+                this.onOpen();
+            },
+            onclose: () => {
+                this.onClose();
+            },
+            onmessage: () => {
+                this.onMessage();
+            },
+            onerror: () => {
+                this.onError();
+            },
+        });
+    }
+    // Clears the filter listening to X chain transactions
+    clearFilter() {
+        let pubsub = new dist.PubSub();
+        let bloom = pubsub.newBloom(FILTER_ADDRESS_SIZE);
+        this.socket.send(bloom);
+    }
+    /**
+     * Creates a bloom filter from the addresses of the tracked wallets and subscribes to
+     * transactions on the node.
+     */
+    updateFilterAddresses() {
+        if (!this.isConnected) {
+            return;
+        }
+        let wallets = this.wallets;
+        let addrs = [];
+        for (let i = 0; i < wallets.length; i++) {
+            let w = wallets[i];
+            let externalAddrs = w.getExternalAddressesXSync();
+            let addrsLen = externalAddrs.length;
+            let startIndex = Math.max(0, addrsLen - FILTER_ADDRESS_SIZE);
+            let addAddrs = externalAddrs.slice(startIndex);
+            addrs.push(...addAddrs);
+        }
+        let pubsub = new dist.PubSub();
+        let bloom = pubsub.newBloom(FILTER_ADDRESS_SIZE);
+        this.socket.send(bloom);
+        // Divide addresses by 100 and send multiple messages
+        // There is a max msg size ~10kb
+        const GROUP_AMOUNT = 100;
+        let index = 0;
+        while (index < addrs.length) {
+            let chunk = addrs.slice(index, index + GROUP_AMOUNT);
+            let addAddrs = pubsub.addAddresses(chunk);
+            this.socket.send(addAddrs);
+            index += GROUP_AMOUNT;
+        }
+    }
+    updateWalletBalanceX() {
+        this.wallets.forEach((w) => {
+            w.updateUtxosX();
+        });
+    }
+    onOpen() {
+        this.isConnected = true;
+        this.updateFilterAddresses();
+    }
+    onMessage() {
+        this.updateWalletBalanceX();
+    }
+    onClose() {
+        this.isConnected = false;
+    }
+    onError() { }
+}
+
+const SOCKET_RECONNECT_TIMEOUT = 1000;
+class EVMWebSocketProvider {
+    constructor(wsUrl) {
+        this.wallets = [];
+        let provider = new ethers.ethers.providers.WebSocketProvider(wsUrl);
+        this.provider = provider;
+        this.wsUrl = wsUrl;
+        this.addListeners();
+    }
+    setEndpoint(wsUrl) {
+        this.destroyConnection();
+        let provider = new ethers.ethers.providers.WebSocketProvider(wsUrl);
+        this.provider = provider;
+        this.wsUrl = wsUrl;
+        this.addListeners();
+    }
+    trackWallet(wallet) {
+        if (this.wallets.includes(wallet)) {
+            return;
+        }
+        this.wallets.push(wallet);
+    }
+    removeWallet(wallet) {
+        if (!this.wallets.includes(wallet)) {
+            return;
+        }
+        let index = this.wallets.indexOf(wallet);
+        this.wallets.splice(index, 1);
+    }
+    destroyConnection() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.provider._websocket.onclose = () => { };
+            yield this.provider.destroy();
+        });
+    }
+    reconnect() {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Clear the current onclose handler so that we dont attempt a reconnection
+            yield this.destroyConnection();
+            let wsProvider = new ethers.ethers.providers.WebSocketProvider(this.wsUrl);
+            this.provider = wsProvider;
+        });
+    }
+    addListeners() {
+        let provider = this.provider;
+        provider.on('block', () => {
+            this.onBlock();
+        });
+        // Save default function so we can keep calling it
+        let defaultOnOpen = provider._websocket.onopen;
+        let defaultOnClose = provider._websocket.onclose;
+        provider._websocket.onopen = (ev) => {
+            if (defaultOnOpen)
+                defaultOnOpen(ev);
+        };
+        provider._websocket.onclose = (ev) => {
+            if (defaultOnClose)
+                defaultOnClose(ev);
+            setTimeout(() => {
+                this.reconnect();
+            }, SOCKET_RECONNECT_TIMEOUT);
+        };
+    }
+    removeListeners() {
+        this.provider.off('block', this.onBlock);
+    }
+    onBlock() {
+        // Update wallet balances
+        this.wallets.forEach((w) => {
+            w.updateAvaxBalanceC();
+        });
+    }
+}
+
+class WebsocketProvider {
+    constructor(avmEndpoint, evmEndpoint) {
+        this.avmProvider = new AVMWebSocketProvider(avmEndpoint);
+        this.evmProvider = new EVMWebSocketProvider(evmEndpoint);
+    }
+    static fromActiveNetwork() {
+        return WebsocketProvider.fromNetworkConfig(exports.activeNetwork);
+    }
+    static fromNetworkConfig(config) {
+        let evm = wsUrlFromConfigEVM(config);
+        let avm = wsUrlFromConfigX(config);
+        return new WebsocketProvider(avm, evm);
+    }
+    setEndpoints(avmEndpoint, evmEndpoint) {
+        this.avmProvider.setEndpoint(avmEndpoint);
+        this.evmProvider.setEndpoint(evmEndpoint);
+    }
+    setNetwork(config) {
+        let evm = wsUrlFromConfigEVM(config);
+        let avm = wsUrlFromConfigX(config);
+        this.setEndpoints(avm, evm);
+    }
+    trackWallet(wallet) {
+        this.avmProvider.trackWallet(wallet);
+        this.evmProvider.trackWallet(wallet);
+    }
+    removeWallet(wallet) {
+        this.avmProvider.removeWallet(wallet);
+        this.evmProvider.removeWallet(wallet);
+    }
+}
+
+function isFujiNetwork(_) {
+    return false;
+}
+function isMainnetNetwork(_) {
+    return false;
+}
+function isLocalNetwork(activeNetwork) {
+    return activeNetwork.networkID === LocalnetConfig.networkID;
+}
+function getAvaxAssetID() {
+    return exports.activeNetwork.avaxID;
+}
+function getActiveNetworkConfig() {
+    return exports.activeNetwork;
+}
 
 /**
  * @ignore
@@ -2071,7 +1870,7 @@ class CryptoHelpers {
         else {
             buff = _.Buffer.from(message);
         }
-        return _.Buffer.from(createHash__default['default']('sha256').update(buff).digest()); // ensures correct Buffer class is used
+        return _.Buffer.from(createHash('sha256').update(buff).digest()); // ensures correct Buffer class is used
     }
     /**
      * Generates a randomized {@link https://github.com/feross/buffer|Buffer} to be used as a salt
@@ -2466,382 +2265,6 @@ const MIN_EVM_SUPPORT_V = '0.5.3';
  */
 const DERIVATION_SLEEP_INTERVAL = 200;
 
-function buildCreateNftFamilyTx(name, symbol, groupNum, fromAddrs, minterAddr, changeAddr, utxoSet) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let fromAddresses = fromAddrs;
-        let changeAddress = changeAddr;
-        let minterAddress = minterAddr;
-        const minterSets = [];
-        // Create the groups
-        for (let i = 0; i < groupNum; i++) {
-            const minterSet = new avm.MinterSet(1, [minterAddress]);
-            minterSets.push(minterSet);
-        }
-        let unsignedTx = yield avalanche()
-            .XChain()
-            .buildCreateNFTAssetTx(utxoSet, fromAddresses, [changeAddress], minterSets, name, symbol);
-        return unsignedTx;
-    });
-}
-function buildMintNftTx(mintUtxo, payload, quantity, ownerAddress, changeAddress, fromAddresses, utxoSet) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let addrBuf = bintools.parseAddress(ownerAddress, 'X');
-        let owners = [];
-        let sourceAddresses = fromAddresses;
-        for (let i = 0; i < quantity; i++) {
-            let owner = new common.OutputOwners([addrBuf]);
-            owners.push(owner);
-        }
-        let groupID = mintUtxo.getOutput().getGroupID();
-        let mintTx = yield avalanche()
-            .XChain()
-            .buildCreateNFTMintTx(utxoSet, owners, sourceAddresses, [changeAddress], mintUtxo.getUTXOID(), groupID, payload);
-        return mintTx;
-    });
-}
-function buildAvmExportTransaction(destinationChain, utxoSet, fromAddresses, toAddress, amount, // export amount + fee
-sourceChangeAddress) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let destinationChainId = chainIdFromAlias(destinationChain);
-        return yield avalanche()
-            .XChain()
-            .buildExportTx(utxoSet, amount, destinationChainId, [toAddress], fromAddresses, [
-            sourceChangeAddress,
-        ]);
-    });
-}
-function buildPlatformExportTransaction(utxoSet, fromAddresses, toAddress, amount, // export amount + fee
-sourceChangeAddress, destinationChain) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let destinationChainId = chainIdFromAlias(destinationChain);
-        return yield avalanche()
-            .PChain()
-            .buildExportTx(utxoSet, amount, destinationChainId, [toAddress], fromAddresses, [sourceChangeAddress]);
-    });
-}
-/**
- *
- * @param fromAddresses
- * @param toAddress
- * @param amount
- * @param fromAddressBech
- * @param destinationChain Either `X` or `P`
- * @param fee Export fee in nAVAX
- */
-function buildEvmExportTransaction(fromAddresses, toAddress, amount, // export amount + fee
-fromAddressBech, destinationChain, fee) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let destinationChainId = chainIdFromAlias(destinationChain);
-        const nonce = yield web3.eth.getTransactionCount(fromAddresses[0]);
-        const avaxAssetIDBuf = yield avalanche().XChain().getAVAXAssetID();
-        const avaxAssetIDStr = bintools.cb58Encode(avaxAssetIDBuf);
-        let fromAddressHex = fromAddresses[0];
-        return yield avalanche()
-            .CChain()
-            .buildExportTx(amount, avaxAssetIDStr, destinationChainId, fromAddressHex, fromAddressBech, [toAddress], nonce, undefined, undefined, fee);
-    });
-}
-function buildEvmTransferEIP1559Tx(from, to, amount, // in wei
-priorityFee, maxFee, gasLimit) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const nonce = yield web3.eth.getTransactionCount(from);
-        const chainId = yield web3.eth.getChainId();
-        const networkId = yield web3.eth.net.getId();
-        const common = EthereumjsCommon__default['default'].custom({ networkId, chainId });
-        const tx$1 = tx.FeeMarketEIP1559Transaction.fromTxData({
-            nonce: nonce,
-            maxFeePerGas: '0x' + maxFee.toString('hex'),
-            maxPriorityFeePerGas: '0x' + priorityFee.toString('hex'),
-            gasLimit: gasLimit,
-            to: to,
-            value: '0x' + amount.toString('hex'),
-            data: '0x',
-        }, { common });
-        return tx$1;
-    });
-}
-function buildEvmTransferNativeTx(from, to, amount, // in wei
-gasPrice, gasLimit) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const nonce = yield web3.eth.getTransactionCount(from);
-        const chainId = yield web3.eth.getChainId();
-        const networkId = yield web3.eth.net.getId();
-        const common = EthereumjsCommon__default['default'].custom({ networkId, chainId });
-        const tx$1 = tx.Transaction.fromTxData({
-            nonce: nonce,
-            gasPrice: '0x' + gasPrice.toString('hex'),
-            gasLimit: gasLimit,
-            to: to,
-            value: '0x' + amount.toString('hex'),
-            data: '0x',
-        }, { common });
-        return tx$1;
-    });
-}
-function buildCustomEvmTx(from, gasPrice, gasLimit, data, to, value, nonce) {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (typeof nonce === 'undefined') {
-            nonce = yield web3.eth.getTransactionCount(from);
-        }
-        const chainId = yield web3.eth.getChainId();
-        const networkId = yield web3.eth.net.getId();
-        const chainParams = {
-            common: EthereumjsCommon__default['default'].forCustomChain('mainnet', { networkId, chainId }, 'istanbul'),
-        };
-        let gasPriceHex = `0x${gasPrice.toString('hex')}`;
-        let tx$1 = tx.Transaction.fromTxData({
-            nonce,
-            gasPrice: gasPriceHex,
-            gasLimit,
-            value,
-            to,
-            data,
-        }, chainParams);
-        return tx$1;
-    });
-}
-function buildEvmTransferErc20Tx(from, to, amount, // in wei
-gasPrice, gasLimit, contractAddress) {
-    return __awaiter(this, void 0, void 0, function* () {
-        //@ts-ignore
-        const cont = new web3.eth.Contract(ERC20Abi.abi, contractAddress);
-        const tokenTx = cont.methods.transfer(to, amount.toString());
-        let data = tokenTx.encodeABI();
-        let tx = yield buildCustomEvmTx(from, gasPrice, gasLimit, data, contractAddress);
-        return tx;
-    });
-}
-function buildEvmTransferErc721Tx(from, to, gasPrice, gasLimit, tokenContract, tokenId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const nonce = yield web3.eth.getTransactionCount(from);
-        const chainId = yield web3.eth.getChainId();
-        const networkId = yield web3.eth.net.getId();
-        const chainParams = {
-            common: EthereumjsCommon__default['default'].forCustomChain('mainnet', { networkId, chainId }, 'istanbul'),
-        };
-        // @ts-ignore
-        const contract = new web3.eth.Contract(ERC721Abi.abi, tokenContract);
-        const tokenTx = contract.methods['safeTransferFrom(address,address,uint256)'](from, to, tokenId);
-        let tx$1 = tx.Transaction.fromTxData({
-            nonce: nonce,
-            gasPrice: '0x' + gasPrice.toString('hex'),
-            gasLimit: gasLimit,
-            value: '0x0',
-            to: tokenContract,
-            data: tokenTx.encodeABI(),
-        }, chainParams);
-        return tx$1;
-    });
-}
-function estimateErc20Gas(tokenContract, from, to, value) {
-    return __awaiter(this, void 0, void 0, function* () {
-        //@ts-ignore
-        const contract = new web3.eth.Contract(ERC20Abi.abi, tokenContract);
-        const tokenTx = contract.methods.transfer(to, value.toString());
-        return yield tokenTx.estimateGas({
-            from: from,
-        });
-    });
-}
-/**
- * Estimate the gas limit for the ERC721 `safeTransferFrom(address,address,uint256)` method.
- * @param contract
- * @param from
- * @param to
- * @param tokenID
- */
-function estimateErc721TransferGas(contract, from, to, tokenID) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let c = getErc721TokenEthers(contract);
-        c = c.connect(exports.ethersProvider);
-        const gas = yield c.estimateGas['safeTransferFrom(address,address,uint256)'](from, to, tokenID);
-        return gas.toNumber();
-    });
-}
-/**
- * Estimates the gas needed to send AVAX
- * @param to Destination address
- * @param amount Amount of AVAX to send, given in WEI
- * @param gasPrice Given in WEI
- */
-function estimateAvaxGas(from, to, amount, gasPrice) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            return yield web3.eth.estimateGas({
-                from,
-                to,
-                gasPrice: `0x${gasPrice.toString('hex')}`,
-                value: `0x${amount.toString('hex')}`,
-            });
-        }
-        catch (e) {
-            // TODO: Throws an error if we do not have enough avax balance
-            //TODO: Is it ok to return 21000
-            return 21000;
-        }
-    });
-}
-var AvmTxNameEnum;
-(function (AvmTxNameEnum) {
-    AvmTxNameEnum[AvmTxNameEnum["Transaction"] = avm.AVMConstants.BASETX] = "Transaction";
-    AvmTxNameEnum[AvmTxNameEnum["Mint"] = avm.AVMConstants.CREATEASSETTX] = "Mint";
-    AvmTxNameEnum[AvmTxNameEnum["Operation"] = avm.AVMConstants.OPERATIONTX] = "Operation";
-    AvmTxNameEnum[AvmTxNameEnum["Import"] = avm.AVMConstants.IMPORTTX] = "Import";
-    AvmTxNameEnum[AvmTxNameEnum["Export"] = avm.AVMConstants.EXPORTTX] = "Export";
-})(AvmTxNameEnum || (AvmTxNameEnum = {}));
-var PlatfromTxNameEnum;
-(function (PlatfromTxNameEnum) {
-    PlatfromTxNameEnum[PlatfromTxNameEnum["Transaction"] = platformvm.PlatformVMConstants.BASETX] = "Transaction";
-    PlatfromTxNameEnum[PlatfromTxNameEnum["Add Validator"] = platformvm.PlatformVMConstants.ADDVALIDATORTX] = "Add Validator";
-    PlatfromTxNameEnum[PlatfromTxNameEnum["Add Delegator"] = platformvm.PlatformVMConstants.ADDDELEGATORTX] = "Add Delegator";
-    PlatfromTxNameEnum[PlatfromTxNameEnum["Import"] = platformvm.PlatformVMConstants.IMPORTTX] = "Import";
-    PlatfromTxNameEnum[PlatfromTxNameEnum["Export"] = platformvm.PlatformVMConstants.EXPORTTX] = "Export";
-    PlatfromTxNameEnum[PlatfromTxNameEnum["Add Subnet Validator"] = platformvm.PlatformVMConstants.ADDSUBNETVALIDATORTX] = "Add Subnet Validator";
-    PlatfromTxNameEnum[PlatfromTxNameEnum["Create Chain"] = platformvm.PlatformVMConstants.CREATECHAINTX] = "Create Chain";
-    PlatfromTxNameEnum[PlatfromTxNameEnum["Create Subnet"] = platformvm.PlatformVMConstants.CREATESUBNETTX] = "Create Subnet";
-    PlatfromTxNameEnum[PlatfromTxNameEnum["Advance Time"] = platformvm.PlatformVMConstants.ADVANCETIMETX] = "Advance Time";
-    PlatfromTxNameEnum[PlatfromTxNameEnum["Reward Validator"] = platformvm.PlatformVMConstants.REWARDVALIDATORTX] = "Reward Validator";
-})(PlatfromTxNameEnum || (PlatfromTxNameEnum = {}));
-// TODO: create asset transactions
-var ParseableAvmTxEnum;
-(function (ParseableAvmTxEnum) {
-    ParseableAvmTxEnum[ParseableAvmTxEnum["Transaction"] = avm.AVMConstants.BASETX] = "Transaction";
-    ParseableAvmTxEnum[ParseableAvmTxEnum["Import"] = avm.AVMConstants.IMPORTTX] = "Import";
-    ParseableAvmTxEnum[ParseableAvmTxEnum["Export"] = avm.AVMConstants.EXPORTTX] = "Export";
-})(ParseableAvmTxEnum || (ParseableAvmTxEnum = {}));
-var ParseablePlatformEnum;
-(function (ParseablePlatformEnum) {
-    ParseablePlatformEnum[ParseablePlatformEnum["Transaction"] = platformvm.PlatformVMConstants.BASETX] = "Transaction";
-    ParseablePlatformEnum[ParseablePlatformEnum["Add Validator"] = platformvm.PlatformVMConstants.ADDVALIDATORTX] = "Add Validator";
-    ParseablePlatformEnum[ParseablePlatformEnum["Add Delegator"] = platformvm.PlatformVMConstants.ADDDELEGATORTX] = "Add Delegator";
-    ParseablePlatformEnum[ParseablePlatformEnum["Import"] = platformvm.PlatformVMConstants.IMPORTTX] = "Import";
-    ParseablePlatformEnum[ParseablePlatformEnum["Export"] = platformvm.PlatformVMConstants.EXPORTTX] = "Export";
-})(ParseablePlatformEnum || (ParseablePlatformEnum = {}));
-var ParseableEvmTxEnum;
-(function (ParseableEvmTxEnum) {
-    ParseableEvmTxEnum[ParseableEvmTxEnum["Import"] = evm.EVMConstants.IMPORTTX] = "Import";
-    ParseableEvmTxEnum[ParseableEvmTxEnum["Export"] = evm.EVMConstants.EXPORTTX] = "Export";
-})(ParseableEvmTxEnum || (ParseableEvmTxEnum = {}));
-
-var tx_helper = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    buildCreateNftFamilyTx: buildCreateNftFamilyTx,
-    buildMintNftTx: buildMintNftTx,
-    buildAvmExportTransaction: buildAvmExportTransaction,
-    buildPlatformExportTransaction: buildPlatformExportTransaction,
-    buildEvmExportTransaction: buildEvmExportTransaction,
-    buildEvmTransferEIP1559Tx: buildEvmTransferEIP1559Tx,
-    buildEvmTransferNativeTx: buildEvmTransferNativeTx,
-    buildCustomEvmTx: buildCustomEvmTx,
-    buildEvmTransferErc20Tx: buildEvmTransferErc20Tx,
-    buildEvmTransferErc721Tx: buildEvmTransferErc721Tx,
-    estimateErc20Gas: estimateErc20Gas,
-    estimateErc721TransferGas: estimateErc721TransferGas,
-    estimateAvaxGas: estimateAvaxGas,
-    get AvmTxNameEnum () { return AvmTxNameEnum; },
-    get PlatfromTxNameEnum () { return PlatfromTxNameEnum; },
-    get ParseableAvmTxEnum () { return ParseableAvmTxEnum; },
-    get ParseablePlatformEnum () { return ParseablePlatformEnum; },
-    get ParseableEvmTxEnum () { return ParseableEvmTxEnum; }
-});
-
-/*
- * Bitcoin BIP32 path helpers
- * (C) 2016 Alex Beregszaszi
- */
-
-const HARDENED = 0x80000000;
-
-var BIPPath = function (path) {
-  if (!Array.isArray(path)) {
-    throw new Error('Input must be an Array')
-  }
-  if (path.length === 0) {
-    throw new Error('Path must contain at least one level')
-  }
-  for (var i = 0; i < path.length; i++) {
-    if (typeof path[i] !== 'number') {
-      throw new Error('Path element is not a number')
-    }
-  }
-  this.path = path;
-};
-
-BIPPath.validatePathArray = function (path) {
-  try {
-    BIPPath.fromPathArray(path);
-    return true
-  } catch (e) {
-    return false
-  }
-};
-
-BIPPath.validateString = function (text, reqRoot) {
-  try {
-    BIPPath.fromString(text, reqRoot);
-    return true
-  } catch (e) {
-    return false
-  }
-};
-
-BIPPath.fromPathArray = function (path) {
-  return new BIPPath(path)
-};
-
-BIPPath.fromString = function (text, reqRoot) {
-  // skip the root
-  if (/^m\//i.test(text)) {
-    text = text.slice(2);
-  } else if (reqRoot) {
-    throw new Error('Root element is required')
-  }
-
-  var path = text.split('/');
-  var ret = new Array(path.length);
-  for (var i = 0; i < path.length; i++) {
-    var tmp = /(\d+)([hH\']?)/.exec(path[i]);
-    if (tmp === null) {
-      throw new Error('Invalid input')
-    }
-    ret[i] = parseInt(tmp[1], 10);
-
-    if (ret[i] >= HARDENED) {
-      throw new Error('Invalid child index')
-    }
-
-    if (tmp[2] === 'h' || tmp[2] === 'H' || tmp[2] === '\'') {
-      ret[i] += HARDENED;
-    } else if (tmp[2].length != 0) {
-      throw new Error('Invalid modifier')
-    }
-  }
-  return new BIPPath(ret)
-};
-
-BIPPath.prototype.toPathArray = function () {
-  return this.path
-};
-
-BIPPath.prototype.toString = function (noRoot, oldStyle) {
-  var ret = new Array(this.path.length);
-  for (var i = 0; i < this.path.length; i++) {
-    var tmp = this.path[i];
-    if (tmp & HARDENED) {
-      ret[i] = (tmp & ~HARDENED) + (oldStyle ? 'h' : '\'');
-    } else {
-      ret[i] = tmp;
-    }
-  }
-  return (noRoot ? '' : 'm/') + ret.join('/')
-};
-
-BIPPath.prototype.inspect = function () {
-  return 'BIPPath <' + this.toString() + '>'
-};
-
-var bip32Path = BIPPath;
-
 /**
  * Given an account number, returns the Avalanche account derivation path as a string
  * @param accountIndex
@@ -2999,14 +2422,14 @@ function platformGetAllUTXOsForAddresses(addrs, endIndex) {
 
 var utxo_helper = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    avmGetAtomicUTXOs: avmGetAtomicUTXOs,
-    platformGetAtomicUTXOs: platformGetAtomicUTXOs,
-    evmGetAtomicUTXOs: evmGetAtomicUTXOs,
-    getStakeForAddresses: getStakeForAddresses,
     avmGetAllUTXOs: avmGetAllUTXOs,
     avmGetAllUTXOsForAddresses: avmGetAllUTXOsForAddresses,
+    avmGetAtomicUTXOs: avmGetAtomicUTXOs,
+    evmGetAtomicUTXOs: evmGetAtomicUTXOs,
+    getStakeForAddresses: getStakeForAddresses,
     platformGetAllUTXOs: platformGetAllUTXOs,
-    platformGetAllUTXOsForAddresses: platformGetAllUTXOsForAddresses
+    platformGetAllUTXOsForAddresses: platformGetAllUTXOsForAddresses,
+    platformGetAtomicUTXOs: platformGetAtomicUTXOs
 });
 
 const validateAddress = (address) => {
@@ -3035,7 +2458,7 @@ function validateAddressP(address) {
     }
 }
 function validateAddressEVM(address) {
-    return Web3__default['default'].utils.isAddress(address);
+    return Web3.utils.isAddress(address);
 }
 /**
  * Returns the human readable part of a X or P bech32 address.
@@ -3055,7 +2478,7 @@ function getAddressChain(address) {
     if (!validateAddress(address)) {
         throw new Error('Invalid address.');
     }
-    if (Web3__default['default'].utils.isAddress(address)) {
+    if (Web3.utils.isAddress(address)) {
         return 'C';
     }
     else {
@@ -3065,12 +2488,12 @@ function getAddressChain(address) {
 
 var address_helper = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    validateAddress: validateAddress,
-    validateAddressX: validateAddressX,
-    validateAddressP: validateAddressP,
-    validateAddressEVM: validateAddressEVM,
+    getAddressChain: getAddressChain,
     getAddressHRP: getAddressHRP,
-    getAddressChain: getAddressChain
+    validateAddress: validateAddress,
+    validateAddressEVM: validateAddressEVM,
+    validateAddressP: validateAddressP,
+    validateAddressX: validateAddressX
 });
 
 /**
@@ -3087,7 +2510,7 @@ function digestMessage(msgStr) {
     let msgSize = Buffer.alloc(4);
     msgSize.writeUInt32BE(mBuf.length, 0);
     let msgBuf = Buffer.from(`\x1AAvalanche Signed Message:\n${msgSize}${msgStr}`, 'utf8');
-    return createHash__default['default']('sha256').update(msgBuf).digest();
+    return createHash('sha256').update(msgBuf).digest();
 }
 let payloadtypes = utils.PayloadTypes.getInstance();
 function parseNftPayload(rawPayload) {
@@ -3099,7 +2522,7 @@ function parseNftPayload(rawPayload) {
     return payloadbase;
 }
 
-Big__default['default'].prototype.toLocaleString = function (toFixed = 9) {
+Big.prototype.toLocaleString = function (toFixed = 9) {
     let fixedStr = this.toFixed(toFixed, 0);
     let split = fixedStr.split('.');
     let wholeStr = parseInt(split[0]).toLocaleString('en-US');
@@ -3125,8 +2548,8 @@ Big__default['default'].prototype.toLocaleString = function (toFixed = 9) {
  * @param denomination number of decimal places to parse with
  */
 function bnToBig(val, denomination = 0) {
-    let mult = Big__default['default'](10).pow(denomination);
-    return new Big__default['default'](val.toString()).div(mult);
+    let mult = Big(10).pow(denomination);
+    return new Big(val.toString()).div(mult);
 }
 /**
  * Converts a BN amount of 18 decimals to 9.
@@ -3190,8 +2613,8 @@ function bnToAvaxP(val) {
  * @param decimals number of decimal places used to parse the number
  */
 function numberToBN(val, decimals) {
-    let valBig = Big__default['default'](val);
-    let tens = Big__default['default'](10).pow(decimals);
+    let valBig = Big(val);
+    let tens = Big(10).pow(decimals);
     let valBN = new dist.BN(valBig.times(tens).toFixed(0));
     return valBN;
 }
@@ -3253,8 +2676,8 @@ function bigToLocaleString(bigVal, decimals = 9) {
  * ```
  */
 function stringToBN(value, decimals) {
-    let big = Big__default['default'](value);
-    let tens = Big__default['default'](10).pow(decimals);
+    let big = Big(value);
+    let tens = Big(10).pow(decimals);
     let mult = big.times(tens);
     let rawStr = mult.toFixed(0, 0);
     return new dist.BN(rawStr);
@@ -3263,7 +2686,7 @@ function bigToBN(val, denom) {
     let denomFlr = Math.floor(denom);
     if (denomFlr < 0)
         throw new Error('Denomination can not be less that 0.');
-    const bnBig = val.mul(Big__default['default'](10).pow(denomFlr));
+    const bnBig = val.mul(Big(10).pow(denomFlr));
     const bnStr = bnBig.toFixed(0, 0);
     return new dist.BN(bnStr);
 }
@@ -3448,11 +2871,11 @@ function sleep(durMs) {
  */
 class CypherAES {
     constructor(value) {
-        this.pass = randomstring__default['default'].generate(32);
-        this.encrypted = AES__default['default'].encrypt(value, this.pass).toString();
+        this.pass = randomstring.generate(32);
+        this.encrypted = AES.encrypt(value, this.pass).toString();
     }
     getValue() {
-        return AES__default['default'].decrypt(this.encrypted, this.pass).toString(CryptoJS__default['default'].enc.Utf8);
+        return AES.decrypt(this.encrypted, this.pass).toString(CryptoJS.enc.Utf8);
     }
 }
 
@@ -4531,16 +3954,16 @@ function estimateExportGasFee(destinationChain, from, fromBech, to, amount) {
 
 var gas_helper = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    getGasPrice: getGasPrice,
-    getAdjustedGasPrice: getAdjustedGasPrice,
     adjustValue: adjustValue,
+    calculateMaxFee: calculateMaxFee,
+    estimateExportGasFee: estimateExportGasFee,
+    estimateExportGasFeeFromMockTx: estimateExportGasFeeFromMockTx,
+    estimateImportGasFeeFromMockTx: estimateImportGasFeeFromMockTx,
+    getAdjustedGasPrice: getAdjustedGasPrice,
     getBaseFee: getBaseFee,
     getBaseFeeRecommended: getBaseFeeRecommended,
-    getMaxPriorityFee: getMaxPriorityFee,
-    calculateMaxFee: calculateMaxFee,
-    estimateImportGasFeeFromMockTx: estimateImportGasFeeFromMockTx,
-    estimateExportGasFeeFromMockTx: estimateExportGasFeeFromMockTx,
-    estimateExportGasFee: estimateExportGasFee
+    getGasPrice: getGasPrice,
+    getMaxPriorityFee: getMaxPriorityFee
 });
 
 class WalletProvider {
@@ -4554,7 +3977,7 @@ class WalletProvider {
          */
         this.utxosP = new platformvm.UTXOSet();
         this.balanceX = {};
-        this.emitter = new EventEmitter$1();
+        this.emitter = new EventEmitter();
         networkEvents.on('network_change', this.onNetworkChange.bind(this));
     }
     /**
@@ -5273,7 +4696,6 @@ class WalletProvider {
             }
             let toAddress = this.getAddressC();
             let ownerAddresses = [bechAddr];
-            let fromAddresses = ownerAddresses;
             const sourceChainId = chainIdFromAlias(sourceChain);
             // Calculate fee if not provided
             if (!fee) {
@@ -5288,7 +4710,7 @@ class WalletProvider {
             }
             const unsignedTx = yield avalanche()
                 .CChain()
-                .buildImportTx(utxoSet, toAddress, ownerAddresses, sourceChainId, fromAddresses, fee);
+                .buildImportTx(utxoSet, toAddress, ownerAddresses, sourceChainId, fee);
             let tx = yield this.signC(unsignedTx);
             let id = yield avalanche().CChain().issueTx(tx);
             yield waitTxC(id);
@@ -6141,300 +5563,6 @@ class PublicMnemonicWallet extends HDWalletAbstract {
     }
 }
 
-var Avalanche$1 = {};
-
-Object.defineProperty(Avalanche$1, "__esModule", {
-  value: true
-});
-
-var _bip32Path = bip32Path;
-
-var _bip32Path2 = _interopRequireDefault(_bip32Path);
-
-var _createHash = createHash__default['default'];
-
-var _createHash2 = _interopRequireDefault(_createHash);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
-/**
- * Avalanche API
- *
- * @example
- * import Avalanche from "@obsidiansystems/hw-app-avalanche";
- * const avalanche = new Avalanche(transport);
- */
-class Avalanche {
-
-  constructor(transport, scrambleKey = "Avalanche", logger = console.error) {
-    this.CLA = 0x80;
-    this.MAX_APDU_SIZE = 230;
-    this.MAX_HRP_LENGTH = 24;
-    this.INS_VERSION = 0x00;
-    this.INS_GET_WALLET_ID = 0x01;
-    this.INS_PROMPT_PUBLIC_KEY = 0x02;
-    this.INS_PROMPT_EXT_PUBLIC_KEY = 0x03;
-    this.INS_SIGN_HASH = 0x04;
-    this.INS_SIGN_TRANSACTION = 0x05;
-
-    this.transport = transport;
-    this.logger = logger;
-    if (scrambleKey) {
-      transport.decorateAppAPIMethods(this, ["getAppConfiguration", "getWalletAddress", "getWalletExtendedPublicKey", "getWalletId", "signHash", "signTransaction"], scrambleKey);
-    }
-  }
-
-  /**
-   * get Avalanche address for a given BIP-32 path.
-   *
-   * @param derivation_path a path in BIP 32 format
-   * @return a buffer with a public key, and TODO: should be address, not public key
-   * @example
-   * await avalanche.getWalletPublicKey("44'/9000'/0'/0/0");
-   */
-  getWalletAddress(derivation_path, hrp = "") {
-    var _this = this;
-
-    return _asyncToGenerator(function* () {
-      if (hrp.length > _this.MAX_HRP_LENGTH) {
-        throw "Maximum Bech32 'human readable part' length exceeded";
-      }
-
-      const cla = _this.CLA;
-      const ins = _this.INS_PROMPT_PUBLIC_KEY;
-      const p1 = hrp.length;
-      const p2 = 0x00;
-      const data = Buffer.concat([Buffer.from(hrp, "latin1"), _this.encodeBip32Path(_bip32Path2.default.fromString(derivation_path))]);
-
-      const response = yield _this.transport.send(cla, ins, p1, p2, data);
-      return response.slice(0, -2);
-    })();
-  }
-
-  /**
-   * get extended public key for a given BIP-32 path.
-   *
-   * @param derivation_path a path in BIP-32 format
-   * @return an object with a buffer for the public key data and a buffer for the chain code
-   * @example
-   * await avalanche.getWalletExtendedPublicKey("44'/9000'/0'/0/0");
-   */
-  getWalletExtendedPublicKey(derivation_path) {
-    var _this2 = this;
-
-    return _asyncToGenerator(function* () {
-      const cla = _this2.CLA;
-      const ins = _this2.INS_PROMPT_EXT_PUBLIC_KEY;
-      const p1 = 0x00;
-      const p2 = 0x00;
-      const data = _this2.encodeBip32Path(_bip32Path2.default.fromString(derivation_path));
-
-      const response = yield _this2.transport.send(cla, ins, p1, p2, data);
-      const publicKeyLength = response[0];
-      const chainCodeOffset = 2 + publicKeyLength;
-      const chainCodeLength = response[1 + publicKeyLength];
-      return {
-        public_key: response.slice(1, 1 + publicKeyLength),
-        chain_code: response.slice(chainCodeOffset, chainCodeOffset + chainCodeLength)
-      };
-    })();
-  }
-
-  /**
-   * Sign a hash with a given set of BIP-32 paths.
-   *
-   * @param derivationPathPrefix a BIP-32 path that will act as the prefix to all other signing paths.
-   * @param derivationPathSuffixes an array of BIP-32 path suffixes that will be
-   *                               appended to the prefix to form the final path for signing.
-   * @param hash 32-byte buffer containing the hash to sign
-   * @return a map of path suffixes (as strings) to signature buffers
-   * @example
-   * const signatures = await avalanche.signHash(
-   *   BIPPath.fromString("44'/9000'/0'"),
-   *   [BIPPath.fromString("0/0")],
-   *   Buffer.from("0000000000000000000000000000000000000000000000000000000000000000", "hex"));
-   */
-  signHash(derivationPathPrefix, derivationPathSuffixes, hash) {
-    var _this3 = this;
-
-    return _asyncToGenerator(function* () {
-      if (hash.length != 32) {
-        throw "Hash buffer must be 32 bytes";
-      }
-
-      const firstMessage = Buffer.concat([_this3.uInt8Buffer(derivationPathSuffixes.length), hash, _this3.encodeBip32Path(derivationPathPrefix)]);
-      const responseHash = yield _this3.transport.send(_this3.CLA, _this3.INS_SIGN_HASH, 0x00, 0x00, firstMessage);
-      if (!responseHash.slice(0, 32).equals(hash)) {
-        throw "Ledger reported a hash that does not match the input hash!";
-      }
-
-      return _this3._collectSignaturesFromSuffixes(derivationPathSuffixes, _this3.INS_SIGN_HASH, 0x01, 0x81);
-    })();
-  }
-
-  /**
-   * Sign a transaction with a given set of BIP-32 paths.
-   *
-   * @param derivationPathPrefix a BIP-32 path that will act as the prefix to all other signing paths.
-   * @param derivationPathSuffixes an array of BIP-32 path suffixes that will be
-   *                               appended to the prefix to form the final path for signing.
-   * @param txn binary of the transaction
-   * @return an object with a hash of the transaction and a map of path suffixes (as strings) to signature buffers
-   * @example
-   * const signatures = await avalanche.signTransaction(
-   *   BIPPath.fromString("44'/9000'/0'"),
-   *   [BIPPath.fromString("0/0")],
-   *   Buffer.from("...", "hex"),
-   *   BIPPath.fromString("44'/9000'/0'/0'/0'"));
-   * );
-   */
-  signTransaction(derivationPathPrefix, derivationPathSuffixes, txn, changePath) {
-    var _this4 = this;
-
-    return _asyncToGenerator(function* () {
-
-      const SIGN_TRANSACTION_SECTION_PREAMBLE = 0x00;
-      const SIGN_TRANSACTION_SECTION_PAYLOAD_CHUNK = 0x01;
-      const SIGN_TRANSACTION_SECTION_PAYLOAD_CHUNK_LAST = 0x81;
-      const SIGN_TRANSACTION_SECTION_SIGN_WITH_PATH = 0x02;
-      const SIGN_TRANSACTION_SECTION_SIGN_WITH_PATH_LAST = 0x82;
-
-      const preamble = Buffer.concat([_this4.uInt8Buffer(derivationPathSuffixes.length), _this4.encodeBip32Path(derivationPathPrefix)]);
-      if (changePath != null) {
-        const preamble_ = Buffer.concat([preamble, _this4.encodeBip32Path(changePath)]);
-        yield _this4.transport.send(_this4.CLA, _this4.INS_SIGN_TRANSACTION, SIGN_TRANSACTION_SECTION_PREAMBLE, 0x01, preamble_);
-      } else {
-        yield _this4.transport.send(_this4.CLA, _this4.INS_SIGN_TRANSACTION, SIGN_TRANSACTION_SECTION_PREAMBLE, 0x00, preamble);
-      }
-
-      let remainingData = txn.slice(0); // copy
-      let response;
-      while (remainingData.length > 0) {
-        const thisChunk = remainingData.slice(0, _this4.MAX_APDU_SIZE);
-        remainingData = remainingData.slice(_this4.MAX_APDU_SIZE);
-        response = yield _this4.transport.send(_this4.CLA, _this4.INS_SIGN_TRANSACTION, remainingData.length > 0 ? SIGN_TRANSACTION_SECTION_PAYLOAD_CHUNK : SIGN_TRANSACTION_SECTION_PAYLOAD_CHUNK_LAST, 0x00, thisChunk);
-      }
-
-      const responseHash = response.slice(0, 32);
-      const expectedHash = Buffer.from((0, _createHash2.default)('sha256').update(txn).digest());
-      if (!responseHash.equals(expectedHash)) {
-        throw "Ledger reported a hash that does not match the expected transaction hash!";
-      }
-
-      return {
-        hash: responseHash,
-        signatures: yield _this4._collectSignaturesFromSuffixes(derivationPathSuffixes, _this4.INS_SIGN_TRANSACTION, SIGN_TRANSACTION_SECTION_SIGN_WITH_PATH, SIGN_TRANSACTION_SECTION_SIGN_WITH_PATH_LAST)
-      };
-    })();
-  }
-
-  /**
-   * Get the version of the Avalanche app installed on the hardware device
-   *
-   * @return an object with a version
-   * @example
-   * console.log(await avalanche.getAppConfiguration());
-   *
-   * {
-   *   "version": "1.0.3",
-   *   "commit": "abcdcefg"
-   *   "name": "Avalanche"
-   * }
-   */
-  getAppConfiguration() {
-    var _this5 = this;
-
-    return _asyncToGenerator(function* () {
-      const data = yield _this5.transport.send(_this5.CLA, _this5.INS_VERSION, 0x00, 0x00);
-
-      const eatNBytes = function (input, n) {
-        const out = input.slice(0, n);
-        return [out, input.slice(n)];
-      };
-
-      const eatWhile = function (input, f) {
-        for (var i = 0; i < input.length; i++) {
-          if (!f(input[i])) {
-            return [input.slice(0, i), input.slice(i)];
-          }
-        }
-        return [input, ""];
-      };
-
-      const [versionData, rest1] = eatNBytes(data, 3);
-      const [commitData, rest2] = eatWhile(rest1, function (c) {
-        return c != 0;
-      });
-      const [nameData, rest3] = eatWhile(rest2.slice(1), function (c) {
-        return c != 0;
-      });
-      if (rest3.toString("hex") != "009000") {
-        _this5.logger("WARNING: Response data does not exactly match expected format for VERSION instruction");
-      }
-
-      return {
-        version: "" + versionData[0] + "." + versionData[1] + "." + versionData[2],
-        commit: commitData.toString("latin1"),
-        name: nameData.toString("latin1")
-      };
-    })();
-  }
-
-  /**
-   * Get the wallet identifier for the Ledger wallet
-   *
-   * @return a byte string
-   * @example
-   * console.log((await avalanche.getWalletId()).toString("hex"));
-   *
-   * 79c46bc3
-   */
-  getWalletId() {
-    var _this6 = this;
-
-    return _asyncToGenerator(function* () {
-      const result = yield _this6.transport.send(_this6.CLA, _this6.INS_GET_WALLET_ID, 0x00, 0x00);
-      return result.slice(0, -2);
-    })();
-  }
-
-  _collectSignaturesFromSuffixes(suffixes, ins, p1NotDone, p1Done) {
-    var _this7 = this;
-
-    return _asyncToGenerator(function* () {
-      let resultMap = new Map();
-      for (let ix = 0; ix < suffixes.length; ix++) {
-        const suffix = suffixes[ix];
-        _this7.logger("Signing with " + suffix.toString(true));
-        const message = _this7.encodeBip32Path(suffix);
-        const isLastMessage = ix >= suffixes.length - 1;
-        const signatureData = yield _this7.transport.send(_this7.CLA, ins, isLastMessage ? p1Done : p1NotDone, 0x00, message);
-        resultMap.set(suffix.toString(true), signatureData.slice(0, -2));
-      }      return resultMap;
-    })();
-  }
-
-  uInt8Buffer(uint8) {
-    let buff = Buffer.alloc(1);
-    buff.writeUInt8(uint8);
-    return buff;
-  }
-
-  uInt32BEBuffer(uint32) {
-    let buff = Buffer.alloc(4);
-    buff.writeUInt32BE(uint32);
-    return buff;
-  }
-
-  encodeBip32Path(path) {
-    const pathArr = path.toPathArray();
-    return Buffer.concat([this.uInt8Buffer(pathArr.length)].concat(pathArr.map(this.uInt32BEBuffer)));
-  }
-}
-var _default = Avalanche$1.default = Avalanche;
-
 /**
  *
  * @param xpub Extended public key for m/44'/60'/0'
@@ -6446,10 +5574,10 @@ function getEthAddressKeyFromAccountKey(xpub, index) {
     return node.toBase58();
 }
 function getAppAvax(transport) {
-    return new _default(transport, 'w0w');
+    return new AppAvax(transport, 'w0w');
 }
 function getAppEth(transport) {
-    return new Eth__default['default'](transport, 'w0w');
+    return new Eth(transport, 'w0w');
 }
 function getLedgerConfigAvax(transport) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -6519,7 +5647,7 @@ class LedgerWallet extends PublicMnemonicWallet {
         return __awaiter(this, void 0, void 0, function* () {
             const ethApp = getAppEth(transport);
             let ethRes = yield ethApp.getAddress(ETH_ACCOUNT_PATH, true, true);
-            let hdEth = new HDKey__default['default']();
+            let hdEth = new HDKey();
             hdEth.publicKey = buffer.Buffer.from(ethRes.publicKey, 'hex');
             hdEth.chainCode = buffer.Buffer.from(ethRes.chainCode, 'hex');
             return hdEth.publicExtendedKey;
@@ -6550,7 +5678,7 @@ class LedgerWallet extends PublicMnemonicWallet {
             let pubKey = res.public_key;
             let chainCode = res.chain_code;
             // Get the base58 publick key from the HDKey instance
-            let hdKey = new HDKey__default['default']();
+            let hdKey = new HDKey();
             // @ts-ignore
             hdKey.publicKey = pubKey;
             // @ts-ignore
@@ -6571,27 +5699,33 @@ class LedgerWallet extends PublicMnemonicWallet {
         return __awaiter(this, void 0, void 0, function* () {
             if (!LedgerWallet.transport)
                 throw ERR_TransportNotSet;
-            const rawUnsignedTx = ethereumjsUtil.rlp.encode([
-                ethereumjsUtil.bnToRlp(tx$1.nonce),
-                ethereumjsUtil.bnToRlp(tx$1.gasPrice),
-                ethereumjsUtil.bnToRlp(tx$1.gasLimit),
+            const rawUnsignedTx = rlp.RLP.encode([
+                tx$1.nonce,
+                tx$1.gasPrice,
+                tx$1.gasLimit,
                 tx$1.to !== undefined ? tx$1.to.buf : dist.Buffer.from([]),
-                ethereumjsUtil.bnToRlp(tx$1.value),
+                tx$1.value,
                 tx$1.data,
-                ethereumjsUtil.bnToRlp(tx$1.common.chainIdBN()),
+                tx$1.common.chainId(),
                 dist.Buffer.from([]),
                 dist.Buffer.from([]),
             ]);
             const ethApp = getAppEth(LedgerWallet.transport);
-            const signature = yield ethApp.signTransaction(getAccountPathEVM(this.accountIndex), rawUnsignedTx.toString('hex'));
+            const signature = yield ethApp.signTransaction(getAccountPathEVM(this.accountIndex), dist.Buffer.from(rawUnsignedTx).toString('hex'));
             const signatureBN = {
-                v: new ethereumjsUtil.BN(signature.v, 16),
-                r: new ethereumjsUtil.BN(signature.r, 16),
-                s: new ethereumjsUtil.BN(signature.s, 16),
+                v: BigInt(signature.v),
+                r: BigInt(signature.r),
+                s: BigInt(signature.s),
             };
             const chainId = yield web3.eth.getChainId();
             const networkId = yield web3.eth.net.getId();
-            let common = EthereumjsCommon__default['default'].forCustomChain('mainnet', { networkId, chainId }, 'istanbul');
+            let common = common$1.Common.custom({
+                networkId,
+                chainId,
+            }, {
+                baseChain: common$1.Chain.Mainnet,
+                hardfork: common$1.Hardfork.Istanbul,
+            });
             const chainParams = {
                 common,
             };
@@ -6743,7 +5877,7 @@ class LedgerWallet extends PublicMnemonicWallet {
             txType === platformvm.PlatformVMConstants.ADDDELEGATORTX) {
             return null;
         }
-        return bip32Path.fromString(`${AVAX_ACCOUNT_PATH}/${chainChangePath}/${changeIdx}`);
+        return bippath.fromString(`${AVAX_ACCOUNT_PATH}/${chainChangePath}/${changeIdx}`);
     }
     // Used for signing transactions that are parsable
     signTransactionParsable(unsignedTx, paths, chainId) {
@@ -6756,8 +5890,8 @@ class LedgerWallet extends PublicMnemonicWallet {
             let bip32Paths = this.pathsToUniqueBipPaths(paths);
             const appAvax = getAppAvax(LedgerWallet.transport);
             const accountPath = chainId === 'C'
-                ? bip32Path.fromString(`${ETH_ACCOUNT_PATH}`)
-                : bip32Path.fromString(getAccountPathAvalanche(this.accountIndex));
+                ? bippath.fromString(`${ETH_ACCOUNT_PATH}`)
+                : bippath.fromString(getAccountPathAvalanche(this.accountIndex));
             let txbuff = unsignedTx.toBuffer();
             let changePath = this.getChangeBipPath(unsignedTx, chainId);
             let ledgerSignedTx = yield appAvax.signTransaction(accountPath, bip32Paths, txbuff, changePath);
@@ -6800,13 +5934,13 @@ class LedgerWallet extends PublicMnemonicWallet {
             if (!LedgerWallet.transport)
                 throw ERR_TransportNotSet;
             let txbuff = unsignedTx.toBuffer();
-            const msg = dist.Buffer.from(createHash__default['default']('sha256').update(txbuff).digest());
+            const msg = dist.Buffer.from(createHash('sha256').update(txbuff).digest());
             let bip32Paths = this.pathsToUniqueBipPaths(paths);
             const appAvax = getAppAvax(LedgerWallet.transport);
             // Sign the msg with ledger
             //TODO: Update when ledger supports Accounts
             const accountPathSource = chainId === 'C' ? ETH_ACCOUNT_PATH : getAccountPathAvalanche(this.accountIndex);
-            const accountPath = bip32Path.fromString(accountPathSource);
+            const accountPath = bippath.fromString(accountPathSource);
             let sigMap = yield appAvax.signHash(accountPath, bip32Paths, msg);
             let creds = this.getCredentials(unsignedTx, paths, sigMap, chainId);
             let signedTx;
@@ -6829,7 +5963,7 @@ class LedgerWallet extends PublicMnemonicWallet {
             return paths.indexOf(val) === i;
         });
         let bip32Paths = uniquePaths.map((path) => {
-            return bip32Path.fromString(path, false);
+            return bippath.fromString(path, false);
         });
         return bip32Paths;
     }
@@ -7459,9 +6593,9 @@ function createCsvStaking(txs) {
  */
 function parseStakingTxs(txs) {
     return txs.map((tx) => {
-        const txDate = moment__default['default'](tx.timestamp).format();
-        const stakeStart = moment__default['default'](tx.stakeStart).format();
-        const stakeEnd = moment__default['default'](tx.stakeEnd).format();
+        const txDate = moment(tx.timestamp).format();
+        const stakeStart = moment(tx.stakeStart).format();
+        const stakeEnd = moment(tx.stakeEnd).format();
         const now = Date.now();
         const stakeAmt = bnToBigAvaxP(tx.amount).toString();
         let rewardAmt;
@@ -7493,7 +6627,7 @@ function createCsvNormal(txs) {
 function parseNormalTxs(txs) {
     const rows = [];
     txs.map((tx) => {
-        const mom = moment__default['default'](tx.timestamp);
+        const mom = moment(tx.timestamp);
         const dateStr = mom.format();
         if (isHistoryBaseTx(tx)) {
             const tokenRows = tx.tokens.map((token) => {
@@ -7520,22 +6654,13 @@ function parseNormalTxs(txs) {
 
 Object.defineProperty(exports, 'BN', {
     enumerable: true,
-    get: function () {
-        return dist.BN;
-    }
+    get: function () { return dist.BN; }
 });
 Object.defineProperty(exports, 'Buffer', {
     enumerable: true,
-    get: function () {
-        return dist.Buffer;
-    }
+    get: function () { return dist.Buffer; }
 });
-Object.defineProperty(exports, 'Big', {
-    enumerable: true,
-    get: function () {
-        return Big__default['default'];
-    }
-});
+exports.Big = Big;
 exports.AVAX_ACCOUNT_PATH = AVAX_ACCOUNT_PATH;
 exports.AVAX_TOKEN_INDEX = AVAX_TOKEN_INDEX;
 exports.AVAX_TOKEN_PATH = AVAX_TOKEN_PATH;
