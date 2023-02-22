@@ -10,7 +10,7 @@ import {
 import { avalanche } from '@/Network/network';
 import { Buffer as BufferAvalanche } from '@c4tplatform/caminojs/dist';
 import { EvmWallet } from '@/Wallet/EVM/EvmWallet';
-import { UnsignedTx, Tx, KeyPair as EVMKeyPair } from '@c4tplatform/caminojs/dist/apis/evm';
+import { UnsignedTx, Tx } from '@c4tplatform/caminojs/dist/apis/evm';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
 import { bintools } from '@/common';
 import { TypedDataV1, TypedMessage } from '@metamask/eth-sig-util';

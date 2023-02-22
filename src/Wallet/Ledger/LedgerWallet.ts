@@ -1,16 +1,9 @@
 //@ts-ignore
 import Eth from '@ledgerhq/hw-app-eth';
 // @ts-ignore
-import AppAvax from '@obsidiansystems/hw-app-avalanche';
-import EthereumjsCommon from '@ethereumjs/common';
-import { importPublic, bnToRlp, rlp, BN as EthBN } from 'ethereumjs-util';
-import {
-    AVAX_ACCOUNT_PATH,
-    ETH_ACCOUNT_PATH,
-    LEDGER_ETH_ACCOUNT_PATH,
-    LEDGER_EXCHANGE_TIMEOUT,
-    MIN_EVM_SUPPORT_V,
-} from '@/Wallet/constants';
+import { Chain, Common, Hardfork } from '@ethereumjs/common';
+import { RLP } from '@ethereumjs/rlp';
+import { AVAX_ACCOUNT_PATH, ETH_ACCOUNT_PATH, LEDGER_EXCHANGE_TIMEOUT, MIN_EVM_SUPPORT_V } from '@/Wallet/constants';
 import HDKey from 'hdkey';
 import { ChainAlias, ILedgerAppConfig, WalletNameType } from '@/Wallet/types';
 import { Transaction, TxOptions } from '@ethereumjs/tx';
@@ -56,7 +49,6 @@ import { PublicMnemonicWallet } from '@/Wallet/PublicMnemonicWallet';
 import { getAppAvax, getAppEth, getEthAddressKeyFromAccountKey, getLedgerConfigAvax } from '@/Wallet/Ledger/utils';
 import Transport from '@ledgerhq/hw-transport';
 import { ERR_ConfigNotSet, ERR_TransportNotSet } from '@/Wallet/Ledger/errors';
-import { TypedDataV1, TypedMessage, typedSignatureHash } from '@metamask/eth-sig-util';
 
 export class LedgerWallet extends PublicMnemonicWallet {
     type: WalletNameType;
@@ -173,14 +165,14 @@ export class LedgerWallet extends PublicMnemonicWallet {
     async signEvm(tx: Transaction): Promise<Transaction> {
         if (!LedgerWallet.transport) throw ERR_TransportNotSet;
 
-        const rawUnsignedTx = rlp.encode([
-            bnToRlp(tx.nonce),
-            bnToRlp(tx.gasPrice),
-            bnToRlp(tx.gasLimit),
+        const rawUnsignedTx = RLP.encode([
+            tx.nonce,
+            tx.gasPrice,
+            tx.gasLimit,
             tx.to !== undefined ? tx.to.buf : Buffer.from([]),
-            bnToRlp(tx.value),
+            tx.value,
             tx.data,
-            bnToRlp(tx.common.chainIdBN()),
+            tx.common.chainId(),
             Buffer.from([]),
             Buffer.from([]),
         ]);
@@ -188,19 +180,28 @@ export class LedgerWallet extends PublicMnemonicWallet {
         const ethApp = getAppEth(LedgerWallet.transport);
         const signature = await ethApp.signTransaction(
             getAccountPathEVM(this.accountIndex),
-            rawUnsignedTx.toString('hex')
+            Buffer.from(rawUnsignedTx).toString('hex')
         );
 
         const signatureBN = {
-            v: new EthBN(signature.v, 16),
-            r: new EthBN(signature.r, 16),
-            s: new EthBN(signature.s, 16),
+            v: BigInt(signature.v),
+            r: BigInt(signature.r),
+            s: BigInt(signature.s),
         };
 
         const chainId = await web3.eth.getChainId();
         const networkId = await web3.eth.net.getId();
 
-        let common = EthereumjsCommon.forCustomChain('mainnet', { networkId, chainId }, 'istanbul');
+        let common = Common.custom(
+            {
+                networkId,
+                chainId,
+            },
+            {
+                baseChain: Chain.Mainnet,
+                hardfork: Hardfork.Istanbul,
+            }
+        );
 
         const chainParams: TxOptions = {
             common,
