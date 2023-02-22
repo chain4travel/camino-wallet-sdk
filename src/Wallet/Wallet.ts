@@ -18,7 +18,6 @@ import {
     buildCreateNftFamilyTx,
     buildCustomEvmTx,
     buildEvmExportTransaction,
-    buildEvmTransferEIP1559Tx,
     buildEvmTransferErc20Tx,
     buildEvmTransferErc721Tx,
     buildEvmTransferNativeTx,
@@ -63,7 +62,7 @@ import { PayloadBase, UnixNow } from '@c4tplatform/caminojs/dist/utils';
 import { getAssetDescription } from '@/Asset/Assets';
 import { getErc20Token } from '@/Asset/Erc20';
 import { NO_NETWORK } from '@/errors';
-import { avaxCtoX, bnToLocaleString, getTxFeeP, getTxFeeX, waitTxC, waitTxEvm, waitTxP, waitTxX } from '@/utils';
+import { avaxCtoX, bnToLocaleString, waitTxC, waitTxEvm, waitTxP, waitTxX } from '@/utils';
 import { EvmWalletReadonly } from '@/Wallet/EVM/EvmWalletReadonly';
 import EventEmitter from 'events';
 import { getTransactionSummary, getTransactionSummaryEVM, HistoryItemType } from '@/History';
@@ -84,7 +83,6 @@ import { networkEvents } from '@/Network/eventEmitter';
 import { NetworkConfig } from '@/Network';
 import { chainIdFromAlias } from '@/Network/helpers/idFromAlias';
 import {
-    estimateExportGasFee,
     estimateExportGasFeeFromMockTx,
     estimateImportGasFeeFromMockTx,
     getBaseFeeRecommended,
@@ -967,7 +965,6 @@ export abstract class WalletProvider {
 
         let toAddress = this.getAddressC();
         let ownerAddresses = [bechAddr];
-        let fromAddresses = ownerAddresses;
         const sourceChainId = chainIdFromAlias(sourceChain);
 
         // Calculate fee if not provided
@@ -985,7 +982,7 @@ export abstract class WalletProvider {
 
         const unsignedTx = await avalanche()
             .CChain()
-            .buildImportTx(utxoSet, toAddress, ownerAddresses, sourceChainId, fromAddresses, fee);
+            .buildImportTx(utxoSet, toAddress, ownerAddresses, sourceChainId, fee);
         let tx = await this.signC(unsignedTx);
         let id = await avalanche().CChain().issueTx(tx);
 
