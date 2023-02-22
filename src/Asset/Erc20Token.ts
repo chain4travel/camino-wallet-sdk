@@ -1,5 +1,5 @@
 import { activeNetwork, web3 } from '@/Network/network';
-import ERC20Abi from '@openzeppelin/contracts/build/contracts/ERC20.json';
+import { ERC20Abi } from '@/helpers/tx_helper';
 import { Erc20TokenData } from '@/Asset/types';
 import { NO_NETWORK } from '@/errors';
 import { BN } from '@c4tplatform/caminojs/dist';

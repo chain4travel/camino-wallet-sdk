@@ -18,11 +18,10 @@ import { PlatformVMConstants, UTXOSet as PlatformUTXOSet } from '@c4tplatform/ca
 import { EVMConstants } from '@c4tplatform/caminojs/dist/apis/evm';
 
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
-import EthereumjsCommon from '@ethereumjs/common';
-import Common, { Chain } from '@ethereumjs/common';
+import { Chain, Common, Hardfork } from '@ethereumjs/common';
 
-import ERC20Abi from '@openzeppelin/contracts/build/contracts/ERC20.json';
-import ERC721Abi from '@openzeppelin/contracts/build/contracts/ERC721.json';
+import ERC20Abi from '@/Abi/ERC20.json';
+import ERC721Abi from '@/Abi/ERC721.json';
 import { bintools } from '@/common';
 import { ExportChainsC, ExportChainsP, ExportChainsX } from '@/Wallet/types';
 import { chainIdFromAlias } from '@/Network/helpers/idFromAlias';
@@ -236,7 +235,16 @@ export async function buildCustomEvmTx(
     const networkId = await web3.eth.net.getId();
 
     const chainParams = {
-        common: EthereumjsCommon.forCustomChain('mainnet', { networkId, chainId }, 'istanbul'),
+        common: Common.custom(
+            {
+                networkId,
+                chainId,
+            },
+            {
+                baseChain: Chain.Mainnet,
+                hardfork: Hardfork.Istanbul,
+            }
+        ),
     };
 
     let gasPriceHex = `0x${gasPrice.toString('hex')}`;
@@ -286,7 +294,16 @@ export async function buildEvmTransferErc721Tx(
     const chainId = await web3.eth.getChainId();
     const networkId = await web3.eth.net.getId();
     const chainParams = {
-        common: EthereumjsCommon.forCustomChain('mainnet', { networkId, chainId }, 'istanbul'),
+        common: Common.custom(
+            {
+                networkId,
+                chainId,
+            },
+            {
+                baseChain: Chain.Mainnet,
+                hardfork: Hardfork.Istanbul,
+            }
+        ),
     };
     // @ts-ignore
     const contract = new web3.eth.Contract(ERC721Abi.abi, tokenContract);
@@ -390,3 +407,5 @@ export enum ParseableEvmTxEnum {
     'Import' = EVMConstants.IMPORTTX,
     'Export' = EVMConstants.EXPORTTX,
 }
+
+export { ERC20Abi, ERC721Abi };
