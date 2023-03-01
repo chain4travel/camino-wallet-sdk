@@ -1,3 +1,4 @@
+/// <reference types="bn.js" />
 import { BN } from '@c4tplatform/caminojs/dist';
 import { ChainIdType } from "../common";
 import { UniversalTx, UniversalTxActionExport, UniversalTxActionImport, UniversalTxExport, UniversalTxImport } from './types';

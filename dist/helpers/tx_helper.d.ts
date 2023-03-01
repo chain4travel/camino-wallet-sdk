@@ -1,3 +1,4 @@
+/// <reference types="bn.js" />
 import { BN } from '@c4tplatform/caminojs/dist';
 import { UnsignedTx as AVMUnsignedTx, UTXO as AVMUTXO, UTXOSet as AVMUTXOSet, UTXOSet } from '@c4tplatform/caminojs/dist/apis/avm';
 import { PayloadBase } from '@c4tplatform/caminojs/dist/utils';

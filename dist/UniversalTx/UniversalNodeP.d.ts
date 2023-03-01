@@ -1,3 +1,4 @@
+/// <reference types="bn.js" />
 import { UniversalNodeAbstract } from "./UniversalNode";
 import { ExportChainsP } from "../Wallet/types";
 import { UniversalTxActionExportP, UniversalTxActionImportP, UniversalTxExportP, UniversalTxImportP } from "./types";

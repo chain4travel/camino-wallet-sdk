@@ -1,3 +1,4 @@
+/// <reference types="bn.js" />
 import { BN } from '@c4tplatform/caminojs/dist';
 import { UniversalTx } from "./types";
 import UniversalNodeX from "./UniversalNodeX";
