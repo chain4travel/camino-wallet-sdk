@@ -2,7 +2,7 @@ import json from '@rollup/plugin-json';
 import commonjs from '@rollup/plugin-commonjs';
 import del from 'rollup-plugin-delete';
 import ttypescript from 'ttypescript';
-import typescript from 'rollup-plugin-typescript2';
+import tsPlugin from 'rollup-plugin-typescript2';
 
 export default {
     input: 'src/index.ts',
@@ -13,7 +13,7 @@ export default {
     },
     plugins: [
         del({ targets: 'dist/*' }),
-        typescript({
+        tsPlugin({
             typescript: ttypescript,
             tsconfig: 'tsconfig.json',
             tsconfigOverride: {
