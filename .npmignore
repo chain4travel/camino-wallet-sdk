@@ -10,7 +10,6 @@ babel.config.js
 jest.config.ts
 jest.setup.js
 rollup.config.js
-tsconfig.json
 
 audits
 node_modules
